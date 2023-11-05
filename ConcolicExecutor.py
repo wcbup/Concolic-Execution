@@ -20,6 +20,23 @@ class ConcolicExecutor:
             # push x on the stack
             self.register_dict["rsp"] -= 4
             self.memory_array[self.register_dict["rsp"]] = x
+        
+        def get_value(x: int | str) -> int | None:
+            if isinstance(x, int):
+                return x
+            elif isinstance(x, str):
+                return self.register_dict[x]
+            else:
+                raise Exception
+        
+        def assign_value(destination: str, value: int) -> None:
+            if not isinstance(value, int):
+                raise Exception(value)
+            
+            if isinstance(destination, str):
+                self.register_dict[destination] = value
+            else:
+                raise Exception(destination)
 
         # init parameters
         para_len = len(parameter_list)
@@ -37,21 +54,34 @@ class ConcolicExecutor:
 
         print("---begin running---", label_name)
         for code in self.parser.code_dict[label_name]:
-            match code.operation.type:
+
+            code.print()
+            operation = code.operation
+
+            match operation.type:
                 case OpType.PUSH:
-                    code.print()
-                    operand = code.operation.operand_list[0]
+                    operand = operation.operand_list[0]
                     if isinstance(operand, int):
                         push(operand)
                         print(" push", operand)
                     elif isinstance(operand, str):
-                        push(self.register_dict[operand])
-                        print(f" push {operand:} [{self.register_dict[operand]}]")
+                        push(get_value(operand))
+                        print(f" push {operand:} [{get_value(operand)}]")
                     else:
                         raise Exception(operand)
                 
+                case OpType.MOV:
+                    destination = operation.operand_list[0]
+                    source = operation.operand_list[1]
+                    print(f" {destination}: {get_value(destination)}")
+                    print(f" {source}: {get_value(source)}")
+
+                    assign_value(destination, get_value(source))
+
+                    print(f" {destination}: {get_value(destination)}")
+                
                 case _:
-                    raise Exception(code.operation.type)
+                    raise Exception(operation.type)
 
 
 # test code
