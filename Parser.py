@@ -11,15 +11,46 @@ class CodeType(Enum):
     OP = 2  # operation
 
 
+class OpType(Enum):
+    PUSH = 1
+    MOV = 2
+    SUB = 3
+    ADD = 4
+    POP = 5
+    RET = 6
+
+
+class Operation:
+    def __init__(self, raw_str: str) -> None:
+        if "push" in raw_str:
+            self.type = OpType.PUSH
+            result = re.search(r"(\bpush\b)\s+(\b\w+)", raw_str)
+            self.operand = result.group(2)
+
+        elif "mov" in raw_str:
+            self.type = OpType.MOV
+        elif "sub" in raw_str:
+            self.type = OpType.SUB
+        elif "add" in raw_str:
+            self.type = OpType.ADD
+        elif "pop" in raw_str:
+            self.type = OpType.POP
+        elif "ret" in raw_str:
+            self.type = OpType.RET
+        else:
+            raise Exception(raw_str)
+
+
 class Code:
     def __init__(self, raw_str: str) -> None:
         self.raw_str = raw_str
-        if ":" in raw_str and '\"' not in raw_str:
+        if ":" in raw_str and '"' not in raw_str:
             self.type = CodeType.LABEL
         elif raw_str[0] == ".":
             self.type = CodeType.MISC
         else:
             self.type = CodeType.OP
+            self.operation = Operation(raw_str)
 
 
 class Parser:
@@ -50,7 +81,15 @@ class Parser:
                 self.code_list.append(tmp_code)
 
         for code in self.code_list:
-            print(code.type, code.raw_str)
+            if code.type == CodeType.LABEL:
+                print(
+                    code.type,
+                    code.raw_str,
+                )
+            else:
+                print(code.type, code.operation.type, code.raw_str)
+                if code.operation.type == OpType.PUSH:
+                    print(" ", code.operation.operand)
 
 
 # test code
