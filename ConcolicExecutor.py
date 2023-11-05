@@ -75,10 +75,17 @@ class ConcolicExecutor:
                     source = operation.operand_list[1]
                     print(f" {destination}: {get_value(destination)}")
                     print(f" {source}: {get_value(source)}")
-
                     assign_value(destination, get_value(source))
-
                     print(f" {destination}: {get_value(destination)}")
+                
+                case OpType.SUB:
+                    operand1 = operation.operand_list[0]
+                    operand2 = operation.operand_list[1]
+                    print(f"{operand1}: {get_value(operand1)}")
+                    print(f"{operand2}: {get_value(operand2)}")
+                    result = get_value(operand1) - get_value(operand2)
+                    assign_value(operation.operand_list[0], result)
+                    print(f"{operand1}: {get_value(operand1)}")
                 
                 case _:
                     raise Exception(operation.type)
