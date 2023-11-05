@@ -179,6 +179,11 @@ class Parser:
                 current_label_str = code.label_str
             else:
                 self.code_dict[current_label_str].append(code)
+        
+        for labe_str in self.code_dict:
+            print(f"---{labe_str}---")
+            for code in self.code_dict[labe_str]:
+                code.print()
 
 
 # test code
