@@ -51,6 +51,8 @@ class Operation:
                 operand_str = result.group(i)
                 if "[" in operand_str:
                     self.operand_list.append(Address(operand_str))
+                elif operand_str.lstrip("-").isdigit():
+                    self.operand_list.append(int(operand_str))
                 else:
                     self.operand_list.append(operand_str)
 
