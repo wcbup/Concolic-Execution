@@ -38,6 +38,8 @@ class Address:
 
 class Operation:
     def __init__(self, raw_str: str) -> None:
+        self.operand_list: List[str | int | Address] = []
+
         if "push" in raw_str:
             self.type = OpType.PUSH
             result = re.search(r"(\bpush\b)\s+(\b\w+)", raw_str)
@@ -46,7 +48,6 @@ class Operation:
         elif "mov" in raw_str:
             self.type = OpType.MOV
             result = re.search(r"(\bmov\b)\s+(\b.+),\s+(\b.+)", raw_str)
-            self.operand_list: List[str | Address] = []
             for i in range(2, 4):
                 operand_str = result.group(i)
                 if "[" in operand_str:
@@ -59,7 +60,6 @@ class Operation:
         elif "sub" in raw_str:
             self.type = OpType.SUB
             result = re.search("sub\s+(\w+),\s+([\w]+)", raw_str)
-            self.operand_list: List[str | int] = []
             for i in range(1, 3):
                 operand_str = result.group(i)
                 if operand_str.isdigit():
@@ -70,7 +70,6 @@ class Operation:
         elif "add" in raw_str:
             self.type = OpType.ADD
             result = re.search("add\s+(\w+),\s+([\w]+)", raw_str)
-            self.operand_list: List[str | int] = []
             for i in range(1, 3):
                 operand_str = result.group(i)
                 if operand_str.isdigit():
@@ -81,8 +80,12 @@ class Operation:
 
         elif "pop" in raw_str:
             self.type = OpType.POP
+            result = re.search("pop\s+(\w+)", raw_str)
+            self.operand_list.append(result.group(1))
+
         elif "ret" in raw_str:
             self.type = OpType.RET
+
         else:
             raise Exception(raw_str)
 
@@ -141,6 +144,8 @@ class Parser:
                 elif code.operation.type == OpType.SUB:
                     print(" ", code.operation.operand_list)
                 elif code.operation.type == OpType.ADD:
+                    print(" ", code.operation.operand_list)
+                elif code.operation.type == OpType.POP:
                     print(" ", code.operation.operand_list)
 
 
