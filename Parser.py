@@ -20,6 +20,22 @@ class OpType(Enum):
     RET = 6
 
 
+class Address:
+    def __init__(self, raw_str: str) -> None:
+        result = re.search(r"[\-]{0,1}[\d]*\[.+\]", raw_str)
+        address_str = result.group(0)
+        offset_result = re.search(r"-{0,1}\d+", address_str)
+        if offset_result != None:
+            self.offset = int(offset_result.group(0))
+        else:
+            self.offset = 0
+        operand_result = re.search(r"\[(.+)\]", address_str)
+        self.operand = operand_result.group(1)
+    
+    def __str__(self) -> str:
+        return f"offset: {self.offset}, operand: {self.operand}"
+
+
 class Operation:
     def __init__(self, raw_str: str) -> None:
         if "push" in raw_str:
@@ -29,11 +45,15 @@ class Operation:
 
         elif "mov" in raw_str:
             self.type = OpType.MOV
-            print(raw_str)
             result = re.search(r"(\bmov\b)\s+(\b.+),\s+(\b.+)", raw_str)
-            self.operand_list: List[str] = []
-            self.operand_list.append(result.group(1))
-            self.operand_list.append(result.group(2))
+            self.operand_list: List[str | Address] = []
+            for i in range(2, 4):
+                operand_str = result.group(i)
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
 
         elif "sub" in raw_str:
             self.type = OpType.SUB
@@ -97,7 +117,7 @@ class Parser:
                 if code.operation.type == OpType.PUSH:
                     print(" ", code.operation.operand_list)
                 elif code.operation.type == OpType.MOV:
-                    print(" ", code.operation.operand_list)
+                    print(" ", [str(i) for i in code.operation.operand_list])
 
 
 # test code
