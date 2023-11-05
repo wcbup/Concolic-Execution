@@ -2,7 +2,7 @@ from __future__ import annotations
 import os
 import re
 from enum import Enum
-from typing import List
+from typing import List, Dict
 
 
 class CodeType(Enum):
@@ -77,7 +77,6 @@ class Operation:
                 else:
                     self.operand_list.append(operand_str)
 
-
         elif "pop" in raw_str:
             self.type = OpType.POP
             result = re.search("pop\s+(\w+)", raw_str)
@@ -95,11 +94,52 @@ class Code:
         self.raw_str = raw_str
         if ":" in raw_str and '"' not in raw_str:
             self.type = CodeType.LABEL
+            self.label_str = raw_str.rstrip(":")
+
         elif raw_str[0] == ".":
             self.type = CodeType.MISC
         else:
             self.type = CodeType.OP
             self.operation = Operation(raw_str)
+
+    def print(self) -> None:
+        match self.type:
+            case CodeType.LABEL:
+                print(self.type, self.raw_str)
+                print(" ", self.label_str)
+
+            case CodeType.OP:
+                print(self.type, self.operation.type, self.raw_str)
+                match self.operation.type:
+                    case OpType.PUSH:
+                        print(" ", self.operation.operand_list)
+
+                    case OpType.MOV:
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
+                    
+                    case OpType.SUB:
+                        print(" ", self.operation.operand_list)
+                    
+                    case OpType.ADD:
+                        print(" ", self.operation.operand_list)
+                    
+                    case OpType.POP:
+                        print(" ", self.operation.operand_list)
+                    
+                    case OpType.RET:
+                        print()
+                    
+                    case _:
+                        raise Exception(self.operation.type)
+
+            case _:
+                raise Exception
 
 
 class Parser:
@@ -130,23 +170,15 @@ class Parser:
                 self.code_list.append(tmp_code)
 
         for code in self.code_list:
+            code.print()
+
+        self.code_dict: Dict[str, List[Code]] = {}
+        for code in self.code_list:
             if code.type == CodeType.LABEL:
-                print(
-                    code.type,
-                    code.raw_str,
-                )
+                self.code_dict[code.label_str] = []
+                current_label_str = code.label_str
             else:
-                print(code.type, code.operation.type, code.raw_str)
-                if code.operation.type == OpType.PUSH:
-                    print(" ", code.operation.operand_list)
-                elif code.operation.type == OpType.MOV:
-                    print(" ", [str(i) if isinstance(i, Address) else i for i in code.operation.operand_list])
-                elif code.operation.type == OpType.SUB:
-                    print(" ", code.operation.operand_list)
-                elif code.operation.type == OpType.ADD:
-                    print(" ", code.operation.operand_list)
-                elif code.operation.type == OpType.POP:
-                    print(" ", code.operation.operand_list)
+                self.code_dict[current_label_str].append(code)
 
 
 # test code
