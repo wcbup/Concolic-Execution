@@ -31,7 +31,7 @@ class Address:
             self.offset = 0
         operand_result = re.search(r"\[(.+)\]", address_str)
         self.operand = operand_result.group(1)
-    
+
     def __str__(self) -> str:
         return f"offset: {self.offset}, operand: {self.operand}"
 
@@ -54,9 +54,17 @@ class Operation:
                 else:
                     self.operand_list.append(operand_str)
 
-
         elif "sub" in raw_str:
             self.type = OpType.SUB
+            result = re.search("sub\s+(\w+),\s+([\w]+)", raw_str)
+            self.operand_list: List[str | int] = []
+            for i in range(1, 3):
+                operand_str = result.group(i)
+                if operand_str.isdigit():
+                    self.operand_list.append(int(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
         elif "add" in raw_str:
             self.type = OpType.ADD
         elif "pop" in raw_str:
@@ -117,7 +125,9 @@ class Parser:
                 if code.operation.type == OpType.PUSH:
                     print(" ", code.operation.operand_list)
                 elif code.operation.type == OpType.MOV:
-                    print(" ", [str(i) for i in code.operation.operand_list])
+                    print(" ", [str(i) if isinstance(i, Address) else i for i in code.operation.operand_list])
+                elif code.operation.type == OpType.SUB:
+                    print(" ", code.operation.operand_list)
 
 
 # test code
