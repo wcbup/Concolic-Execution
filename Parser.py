@@ -69,6 +69,16 @@ class Operation:
 
         elif "add" in raw_str:
             self.type = OpType.ADD
+            result = re.search("add\s+(\w+),\s+([\w]+)", raw_str)
+            self.operand_list: List[str | int] = []
+            for i in range(1, 3):
+                operand_str = result.group(i)
+                if operand_str.isdigit():
+                    self.operand_list.append(int(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
+
         elif "pop" in raw_str:
             self.type = OpType.POP
         elif "ret" in raw_str:
@@ -129,6 +139,8 @@ class Parser:
                 elif code.operation.type == OpType.MOV:
                     print(" ", [str(i) if isinstance(i, Address) else i for i in code.operation.operand_list])
                 elif code.operation.type == OpType.SUB:
+                    print(" ", code.operation.operand_list)
+                elif code.operation.type == OpType.ADD:
                     print(" ", code.operation.operand_list)
 
 
