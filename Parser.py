@@ -25,10 +25,16 @@ class Operation:
         if "push" in raw_str:
             self.type = OpType.PUSH
             result = re.search(r"(\bpush\b)\s+(\b\w+)", raw_str)
-            self.operand = result.group(2)
+            self.operand_list = [result.group(2)]
 
         elif "mov" in raw_str:
             self.type = OpType.MOV
+            print(raw_str)
+            result = re.search(r"(\bmov\b)\s+(\b.+),\s+(\b.+)", raw_str)
+            self.operand_list: List[str] = []
+            self.operand_list.append(result.group(1))
+            self.operand_list.append(result.group(2))
+
         elif "sub" in raw_str:
             self.type = OpType.SUB
         elif "add" in raw_str:
@@ -89,9 +95,13 @@ class Parser:
             else:
                 print(code.type, code.operation.type, code.raw_str)
                 if code.operation.type == OpType.PUSH:
-                    print(" ", code.operation.operand)
+                    print(" ", code.operation.operand_list)
+                elif code.operation.type == OpType.MOV:
+                    print(" ", code.operation.operand_list)
 
 
 # test code
 if __name__ == "__main__":
     parser = Parser("TestCode\\foo.c")
+    # parser = Parser("TestCode\\div.c")
+    # parser = Parser("TestCode\\userDefinedException.c")
