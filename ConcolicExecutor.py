@@ -123,6 +123,16 @@ class ConcolicExecutor:
                     assign_value(operation.operand_list[0], result)
                     print(f" {operand1}: {get_value(operand1)}")
                 
+                case OpType.SAL:
+                    operand1 = operation.operand_list[0]
+                    operand2 = operation.operand_list[1]
+                    print(f" {operand1}: {get_value(operand1)}")
+                    print(f" {operand2}: {get_value(operand2)}")
+                    result = get_value(operand1) << get_value(operand2)
+                    assign_value(operation.operand_list[0], result)
+                    print(f" {operand1}: {get_value(operand1)}")
+
+                
                 case OpType.RET:
                     result_address: str | None = pop()
                     if result_address is None:
