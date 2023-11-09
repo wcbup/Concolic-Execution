@@ -2,14 +2,16 @@
 // {
 //     return a + b + c + d + e + f + g;
 // }
+
+
 int foo(int a)
 {
     int b, c;
     b = 2;
     c = 3;
-    // c *= 7;
-    // b = a + 1;
-    // c = (a - 2) / b * 77;
+    c *= 7;
+    b = a + 1;
+    c = (a - 2) / b * 77;
     // c += sum(b, b, c, b, a, b, b);
     return a + b + c;
 }

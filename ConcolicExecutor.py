@@ -145,4 +145,4 @@ if __name__ == "__main__":
 
     executor = ConcolicExecutor(parser)
 
-    executor.run("foo", [99])
+    executor.run("foo", [22])

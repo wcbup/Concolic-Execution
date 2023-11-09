@@ -18,6 +18,10 @@ class OpType(Enum):
     ADD = 4
     POP = 5
     RET = 6
+    SAL = 7  # shift arithmetic left
+    CDQ = 8  # edx = eax
+    IDIV = 9
+    IMUL = 10
 
 
 class Address:
@@ -59,7 +63,7 @@ class Operation:
 
         elif "sub" in raw_str:
             self.type = OpType.SUB
-            result = re.search("sub\s+(\w+),\s+([\w]+)", raw_str)
+            result = re.search(r"sub\s+(\w+),\s+([\w]+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
                 if operand_str.isdigit():
@@ -69,7 +73,17 @@ class Operation:
 
         elif "add" in raw_str:
             self.type = OpType.ADD
-            result = re.search("add\s+(\w+),\s+([\w]+)", raw_str)
+            result = re.search(r"add\s+(\w+),\s+([\w]+)", raw_str)
+            for i in range(1, 3):
+                operand_str = result.group(i)
+                if operand_str.isdigit():
+                    self.operand_list.append(int(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
+        elif "sal" in raw_str:
+            self.type = OpType.SAL
+            result = re.search(r"sal\s+(\w+),\s+([\w]+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
                 if operand_str.isdigit():
@@ -79,11 +93,20 @@ class Operation:
 
         elif "pop" in raw_str:
             self.type = OpType.POP
-            result = re.search("pop\s+(\w+)", raw_str)
+            result = re.search(r"pop\s+(\w+)", raw_str)
             self.operand_list.append(result.group(1))
 
         elif "ret" in raw_str:
             self.type = OpType.RET
+
+        elif "cdq" in raw_str:
+            self.type = OpType.CDQ
+
+        elif "idiv" in raw_str:
+            self.type = OpType.IDIV
+
+        elif "imul" in raw_str:
+            self.type = OpType.IMUL
 
         else:
             raise Exception(raw_str)
@@ -122,19 +145,22 @@ class Code:
                                 for i in self.operation.operand_list
                             ],
                         )
-                    
+
                     case OpType.SUB:
                         print(" ", self.operation.operand_list)
-                    
+
                     case OpType.ADD:
                         print(" ", self.operation.operand_list)
-                    
+
+                    case OpType.SAL:
+                        print(" ", self.operation.operand_list)
+
                     case OpType.POP:
                         print(" ", self.operation.operand_list)
-                    
+
                     case OpType.RET:
                         print()
-                    
+
                     case _:
                         raise Exception(self.operation.type)
 
@@ -179,7 +205,7 @@ class Parser:
                 current_label_str = code.label_str
             else:
                 self.code_dict[current_label_str].append(code)
-        
+
         for labe_str in self.code_dict:
             print(f"---{labe_str}---")
             for code in self.code_dict[labe_str]:
