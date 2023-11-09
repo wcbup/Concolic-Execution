@@ -63,6 +63,13 @@ class Operation:
                 else:
                     self.operand_list.append(operand_str)
 
+        elif "idiv" in raw_str:
+            if "[" not in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.IDIV
+            result = re.search(r"idiv\s+(\b.+)", raw_str)
+            self.operand_list.append(Address(result.group(1)))
+
         elif "sub" in raw_str:
             if "[" in raw_str:
                 raise Exception(raw_str)
@@ -112,9 +119,6 @@ class Operation:
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
 
-        elif "idiv" in raw_str:
-            self.type = OpType.IDIV
-
         elif "imul" in raw_str:
             self.type = OpType.IMUL
 
@@ -148,6 +152,15 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
+
+                    case OpType.IDIV:
                         print(
                             " ",
                             [
