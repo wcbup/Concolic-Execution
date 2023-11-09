@@ -1,60 +1,70 @@
 from __future__ import annotations
-from Parser import Parser, OpType
+from Parser import Parser, OpType, Address
 from typing import Dict, List
 
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser) -> None:
         self.parser = parser
-        self.register_dict: Dict[str, int | str | None] = {}
-        self.memory_array = [0] * 10_000
+        self.register_dict: Dict[str, int | None] = {}
+        self.memory_array: List[None | int] = [None] * 10_000
 
     def run(self, label_name: str, parameter_list: List[int]) -> None:
         # init return address
         self.register_dict["ret"] = None
-        # init rsp
+        # init register
         self.register_dict["rsp"] = 9000
         self.register_dict["rbp"] = None
+        self.register_dict["eax"] = None
+        self.register_dict["ecx"] = None
+        self.register_dict["edx"] = None
 
         def push(x: int | None) -> None:
             # push x on the stack
-            self.register_dict["rsp"] -= 4
+            self.register_dict["rsp"] -= 8
             self.memory_array[self.register_dict["rsp"]] = x
-        
-        def get_value(x: int | str) -> int | None:
+
+        def get_value(x: int | str | Address) -> int | None:
             if isinstance(x, int):
                 return x
             elif isinstance(x, str):
                 return self.register_dict[x]
+            elif isinstance(x, Address):
+                return self.memory_array[get_value(x.operand) + x.offset]
             else:
-                raise Exception
-        
-        def assign_value(destination: str, value: int) -> None:
+                raise Exception(x)
+
+        def assign_value(destination: str | Address, value: int) -> None:
             if not isinstance(value, int):
                 raise Exception(value)
-            
+
             if isinstance(destination, str):
                 self.register_dict[destination] = value
+            elif isinstance(destination, Address):
+                self.memory_array[
+                    get_value(destination.operand) + destination.offset
+                ] = value
             else:
                 raise Exception(destination)
 
         # init parameters
         para_len = len(parameter_list)
         if para_len >= 1:
-            self.register_dict["rcx"] = parameter_list[0]
+            self.register_dict["ecx"] = parameter_list[0]
         if para_len >= 2:
-            self.register_dict["rdx"] = parameter_list[1]
+            self.register_dict["edx"] = parameter_list[1]
         if para_len >= 3:
-            self.register_dict["r8"] = parameter_list[2]
+            # TBD
+            raise Exception
         if para_len >= 4:
-            self.register_dict["r8"] = parameter_list[2]
+            # TBD
+            raise Exception
         if para_len > 4:
             # TBD
             raise Exception
 
         print("---begin running---", label_name)
         for code in self.parser.code_dict[label_name]:
-
             code.print()
             operation = code.operation
 
@@ -69,7 +79,7 @@ class ConcolicExecutor:
                         print(f" push {operand:} [{get_value(operand)}]")
                     else:
                         raise Exception(operand)
-                
+
                 case OpType.MOV:
                     destination = operation.operand_list[0]
                     source = operation.operand_list[1]
@@ -77,7 +87,7 @@ class ConcolicExecutor:
                     print(f" {source}: {get_value(source)}")
                     assign_value(destination, get_value(source))
                     print(f" {destination}: {get_value(destination)}")
-                
+
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
@@ -86,7 +96,7 @@ class ConcolicExecutor:
                     result = get_value(operand1) - get_value(operand2)
                     assign_value(operation.operand_list[0], result)
                     print(f"{operand1}: {get_value(operand1)}")
-                
+
                 case _:
                     raise Exception(operation.type)
 
