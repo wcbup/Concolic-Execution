@@ -104,12 +104,19 @@ class ConcolicExecutor:
                     print(f" {source}: {get_value(source)}")
                     assign_value(destination, get_value(source))
                     print(f" {destination}: {get_value(destination)}")
-                
+
                 case OpType.IDIV:
                     operand = operation.operand_list[0]
                     print(f" {operand}: {get_value(operand)}")
-                    print(f" : {get_value('rsp')}")
-
+                    print(f" eax: {get_value('eax')}")
+                    print(f" edx: {get_value('edx')}")
+                    quotient = int(get_value("eax") / get_value(operand))
+                    remainder = get_value("eax") % get_value(operand)
+                    assign_value("eax", quotient)
+                    assign_value("edx", remainder)
+                    print(f" {operand}: {get_value(operand)}")
+                    print(f" eax: {get_value('eax')}")
+                    print(f" edx: {get_value('edx')}")
 
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
@@ -168,4 +175,4 @@ if __name__ == "__main__":
 
     executor = ConcolicExecutor(parser)
 
-    executor.run("foo", [0])
+    executor.run("foo", [2])

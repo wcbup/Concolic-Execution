@@ -1,2 +1,1 @@
-s = "-14"
-print(s.isdigit())
+print(333 % 100)
