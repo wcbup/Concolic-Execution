@@ -7,14 +7,14 @@ class ConcolicExecutor:
     def __init__(self, parser: Parser) -> None:
         self.parser = parser
         self.register_dict: Dict[str, int | None] = {}
-        self.memory_array: List[None | int] = [None] * 10_000
+        self.memory_array: List[None | int | str] = [None] * 10_000
 
     def run(self, label_name: str, parameter_list: List[int]) -> None:
         # init return address
         self.register_dict["ret"] = None
         # init register
         self.register_dict["rsp"] = 9000
-        self.register_dict["rbp"] = None
+        self.register_dict["rbp"] = 9000
         self.register_dict["eax"] = None
         self.register_dict["ecx"] = None
         self.register_dict["edx"] = None
@@ -23,6 +23,12 @@ class ConcolicExecutor:
             # push x on the stack
             self.register_dict["rsp"] -= 8
             self.memory_array[self.register_dict["rsp"]] = x
+        
+        def pop() -> int:
+            # pop the stack
+            value = self.memory_array[self.register_dict["rsp"]]
+            self.register_dict["rsp"] += 8
+            return value
 
         def get_value(x: int | str | Address) -> int | None:
             if isinstance(x, int):
@@ -71,6 +77,7 @@ class ConcolicExecutor:
             match operation.type:
                 case OpType.PUSH:
                     operand = operation.operand_list[0]
+                    print(f" rsp: {get_value('rsp')}")
                     if isinstance(operand, int):
                         push(operand)
                         print(" push", operand)
@@ -79,6 +86,16 @@ class ConcolicExecutor:
                         print(f" push {operand:} [{get_value(operand)}]")
                     else:
                         raise Exception(operand)
+                    print(f" rsp: {get_value('rsp')}")
+
+                case OpType.POP:
+                    operand = operation.operand_list[0]
+                    print(f" {operand}: {get_value(operand)}")
+                    print(f" rsp: {get_value('rsp')}")
+                    value = pop()
+                    assign_value(operand, value)
+                    print(f" {operand}: {get_value(operand)}")
+                    print(f" rsp: {get_value('rsp')}")
 
                 case OpType.MOV:
                     destination = operation.operand_list[0]
@@ -105,6 +122,7 @@ class ConcolicExecutor:
                     result = get_value(operand1) + get_value(operand2)
                     assign_value(operation.operand_list[0], result)
                     print(f"{operand1}: {get_value(operand1)}")
+                
 
                 case _:
                     raise Exception(operation.type)
