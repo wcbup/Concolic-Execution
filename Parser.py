@@ -45,6 +45,8 @@ class Operation:
         self.operand_list: List[str | int | Address] = []
 
         if "push" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
             self.type = OpType.PUSH
             result = re.search(r"(\bpush\b)\s+(\b\w+)", raw_str)
             self.operand_list = [result.group(2)]
@@ -62,6 +64,8 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "sub" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
             self.type = OpType.SUB
             result = re.search(r"sub\s+(\w+),\s+([\w]+)", raw_str)
             for i in range(1, 3):
@@ -72,6 +76,8 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "add" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
             self.type = OpType.ADD
             result = re.search(r"add\s+(\w+),\s+([\w]+)", raw_str)
             for i in range(1, 3):
@@ -82,6 +88,8 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "sal" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
             self.type = OpType.SAL
             result = re.search(r"sal\s+(\w+),\s+([\w]+)", raw_str)
             for i in range(1, 3):
@@ -92,6 +100,8 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "pop" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
             self.type = OpType.POP
             result = re.search(r"pop\s+(\w+)", raw_str)
             self.operand_list.append(result.group(1))
@@ -157,6 +167,9 @@ class Code:
 
                     case OpType.POP:
                         print(" ", self.operation.operand_list)
+
+                    case OpType.CDQ:
+                        print()
 
                     case OpType.RET:
                         print()
