@@ -132,6 +132,14 @@ class ConcolicExecutor:
                     assign_value(operation.operand_list[0], result)
                     print(f" {operand1}: {get_value(operand1)}")
 
+                case OpType.CDQ:
+                    destination = "edx"
+                    source = "eax"
+                    print(f" {destination}: {get_value(destination)}")
+                    print(f" {source}: {get_value(source)}")
+                    assign_value(destination, get_value(source))
+                    print(f" {destination}: {get_value(destination)}")
+
                 
                 case OpType.RET:
                     result_address: str | None = pop()
