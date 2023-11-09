@@ -118,6 +118,20 @@ class ConcolicExecutor:
                     print(f" eax: {get_value('eax')}")
                     print(f" edx: {get_value('edx')}")
 
+                case OpType.IMUL:
+                    if len(operation.operand_list) != 3:
+                        raise Exception
+                    operand_list: List[int | str] = []
+                    for i in operation.operand_list:
+                        print(f" {i}: {get_value(i)}")
+                    result = get_value(operation.operand_list[1]) * get_value(
+                        operation.operand_list[2]
+                    )
+                    assign_value(operation.operand_list[0], result)
+                    print(
+                        f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
+                    )
+
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
