@@ -23,7 +23,7 @@ class ConcolicExecutor:
             # push x on the stack
             self.register_dict["rsp"] -= 8
             self.memory_array[self.register_dict["rsp"]] = x
-        
+
         def pop() -> int | None | str:
             # pop the stack
             value = self.memory_array[self.register_dict["rsp"]]
@@ -104,6 +104,12 @@ class ConcolicExecutor:
                     print(f" {source}: {get_value(source)}")
                     assign_value(destination, get_value(source))
                     print(f" {destination}: {get_value(destination)}")
+                
+                case OpType.IDIV:
+                    operand = operation.operand_list[0]
+                    print(f" {operand}: {get_value(operand)}")
+                    print(f" : {get_value('rsp')}")
+
 
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
@@ -122,7 +128,7 @@ class ConcolicExecutor:
                     result = get_value(operand1) + get_value(operand2)
                     assign_value(operation.operand_list[0], result)
                     print(f" {operand1}: {get_value(operand1)}")
-                
+
                 case OpType.SAL:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
@@ -133,14 +139,14 @@ class ConcolicExecutor:
                     print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.CDQ:
-                    destination = "edx"
-                    source = "eax"
-                    print(f" {destination}: {get_value(destination)}")
-                    print(f" {source}: {get_value(source)}")
-                    assign_value(destination, get_value(source))
-                    print(f" {destination}: {get_value(destination)}")
+                    pass
+                    # destination = "edx"
+                    # source = "eax"
+                    # print(f" {destination}: {get_value(destination)}")
+                    # print(f" {source}: {get_value(source)}")
+                    # assign_value(destination, get_value(source))
+                    # print(f" {destination}: {get_value(destination)}")
 
-                
                 case OpType.RET:
                     result_address: str | None = pop()
                     if result_address is None:
@@ -149,7 +155,6 @@ class ConcolicExecutor:
                         return get_value("eax")
                     else:
                         raise Exception(result_address)
-                
 
                 case _:
                     raise Exception(operation.type)
