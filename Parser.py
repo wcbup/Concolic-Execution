@@ -70,6 +70,18 @@ class Operation:
             result = re.search(r"idiv\s+(\b.+)", raw_str)
             self.operand_list.append(Address(result.group(1)))
 
+        elif "imul" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.IMUL
+            result = re.search(r"\bimul\b\s+(\b.+),\s+(\b.+),\s+(\b.+)", raw_str)
+            for i in range(1, 4):
+                operand_str = result.group(i)
+                if operand_str.lstrip("-").isdigit():
+                    self.operand_list.append(int(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
         elif "sub" in raw_str:
             if "[" in raw_str:
                 raise Exception(raw_str)
@@ -119,9 +131,6 @@ class Operation:
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
 
-        elif "imul" in raw_str:
-            self.type = OpType.IMUL
-
         else:
             raise Exception(raw_str)
 
@@ -161,6 +170,15 @@ class Code:
                         )
 
                     case OpType.IDIV:
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
+
+                    case OpType.IMUL:
                         print(
                             " ",
                             [
