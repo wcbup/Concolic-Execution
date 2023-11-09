@@ -83,13 +83,13 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "sub" in raw_str:
-            if "[" in raw_str:
-                raise Exception(raw_str)
             self.type = OpType.SUB
-            result = re.search(r"sub\s+(\w+),\s+([\w]+)", raw_str)
+            result = re.search(r"\bsub\b\s+(\b.+),\s+(\b.+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
-                if operand_str.isdigit():
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                elif operand_str.isdigit():
                     self.operand_list.append(int(operand_str))
                 else:
                     self.operand_list.append(operand_str)
