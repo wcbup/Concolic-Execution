@@ -9,7 +9,7 @@ class ConcolicExecutor:
         self.register_dict: Dict[str, int | None] = {}
         self.memory_array: List[None | int | str] = [None] * 10_000
 
-    def run(self, label_name: str, parameter_list: List[int]) -> None:
+    def run(self, label_name: str, parameter_list: List[int]) -> int | None:
         # init return address
         self.register_dict["ret"] = None
         # init register
@@ -24,7 +24,7 @@ class ConcolicExecutor:
             self.register_dict["rsp"] -= 8
             self.memory_array[self.register_dict["rsp"]] = x
         
-        def pop() -> int:
+        def pop() -> int | None | str:
             # pop the stack
             value = self.memory_array[self.register_dict["rsp"]]
             self.register_dict["rsp"] += 8
@@ -108,20 +108,29 @@ class ConcolicExecutor:
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    print(f"{operand1}: {get_value(operand1)}")
-                    print(f"{operand2}: {get_value(operand2)}")
+                    print(f" {operand1}: {get_value(operand1)}")
+                    print(f" {operand2}: {get_value(operand2)}")
                     result = get_value(operand1) - get_value(operand2)
                     assign_value(operation.operand_list[0], result)
-                    print(f"{operand1}: {get_value(operand1)}")
+                    print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.ADD:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    print(f"{operand1}: {get_value(operand1)}")
-                    print(f"{operand2}: {get_value(operand2)}")
+                    print(f" {operand1}: {get_value(operand1)}")
+                    print(f" {operand2}: {get_value(operand2)}")
                     result = get_value(operand1) + get_value(operand2)
                     assign_value(operation.operand_list[0], result)
-                    print(f"{operand1}: {get_value(operand1)}")
+                    print(f" {operand1}: {get_value(operand1)}")
+                
+                case OpType.RET:
+                    result_address: str | None = pop()
+                    if result_address is None:
+                        print(" Finishing!")
+                        print(f" result is {get_value('eax')}")
+                        return get_value("eax")
+                    else:
+                        raise Exception(result_address)
                 
 
                 case _:
@@ -136,4 +145,4 @@ if __name__ == "__main__":
 
     executor = ConcolicExecutor(parser)
 
-    executor.run("foo", [2])
+    executor.run("foo", [99])
