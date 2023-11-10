@@ -64,6 +64,14 @@ class Operation:
             result = re.search(r"\bcall\b\s+(\b\w+)", raw_str)
             self.operand_list = [result.group(1)]
 
+        elif "jg" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JG
+            result = re.search(r"\bjg\b\s+([\w\.]+)", raw_str)
+            self.operand_list = [result.group(1)]
+
+
         elif "mov" in raw_str:
             self.type = OpType.MOV
             result = re.search(r"(\bmov\b)\s+(\b.+),\s+(\b.+)", raw_str)
@@ -168,9 +176,6 @@ class Operation:
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
 
-        elif "jg" in raw_str:
-            self.type = OpType.JG
-
         elif "jmp" in raw_str:
             self.type = OpType.JMP
 
@@ -207,6 +212,9 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.CALL:
+                        print(" ", self.operation.operand_list)
+
+                    case OpType.JG:
                         print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
