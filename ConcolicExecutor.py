@@ -14,7 +14,7 @@ class ConcolicExecutor:
         # init register
         self.register_dict["rsp"] = 9000
         self.register_dict["rbp"] = 9000
-        self.register_dict["rbx"] = None
+        self.register_dict["rbx"] = 9000
         self.register_dict["eax"] = None
         self.register_dict["ecx"] = None
         self.register_dict["edx"] = None
@@ -197,6 +197,9 @@ class ConcolicExecutor:
                 case OpType.JNE:
                     if self.cmp_operand1 != self.cmp_operand2:
                         self.run(operation.operand_list[0])
+
+                case OpType.JMP:
+                    self.run(operation.operand_list[0])
 
                 case OpType.CALL:
                     push(None)  # push placeholder (return address)
