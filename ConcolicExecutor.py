@@ -203,15 +203,21 @@ class ConcolicExecutor:
                     self.run(operation.operand_list[0])
 
                 case OpType.CALL:
-                    push(None)  # push placeholder (return address)
-                    self.run(operation.operand_list[0])
+                    push(operation_index)  # push return address
+                    operation_index = self.parser.label_dict[operation.operand_list[0]]
+                    operation_index -= 1
 
                 case OpType.RET:
                     result_address: str | None = pop()
                     if result_address is None:
-                        print(" Returning!")
+                        print(" Finishing!")
                         print(f" result is {get_value('eax')}")
                         return get_value("eax")
+                    elif isinstance(result_address, int):
+                        print(" Returning")
+                        print(f" result is {get_value('eax')}")
+                        operation_index = result_address
+
                     else:
                         raise Exception(result_address)
 
