@@ -337,10 +337,12 @@ class Parser:
             code.print()
 
         self.code_dict: Dict[str, List[Code]] = {}
+        self.label_list: List[str] = []
         for code in self.code_list:
             if code.type == CodeType.LABEL:
                 self.code_dict[code.label_str] = []
                 current_label_str = code.label_str
+                self.label_list.append(current_label_str)
             else:
                 self.code_dict[current_label_str].append(code)
 
@@ -348,6 +350,8 @@ class Parser:
             print(f"---{labe_str}---")
             for code in self.code_dict[labe_str]:
                 code.print()
+        print("---label list---")
+        print(self.label_list)
 
 
 # test code
