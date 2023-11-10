@@ -182,6 +182,14 @@ class ConcolicExecutor:
                     # assign_value(destination, get_value(source))
                     # print(f" {destination}: {get_value(destination)}")
 
+                case OpType.CMP:
+                    operand1 = operation.operand_list[0]
+                    operand2 = operation.operand_list[1]
+                    print(f" {operand1}: {get_value(operand1)}")
+                    print(f" {operand2}: {get_value(operand2)}")
+                    self.cmp_operand1 = operand1
+                    self.cmp_operand2 = operand2
+
                 case OpType.CALL:
                     push(None)  # push placeholder (return address)
                     self.run(operation.operand_list[0])
