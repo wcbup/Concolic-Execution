@@ -194,6 +194,10 @@ class ConcolicExecutor:
                     if self.cmp_operand1 > self.cmp_operand2:
                         self.run(operation.operand_list[0])
 
+                case OpType.JNE:
+                    if self.cmp_operand1 != self.cmp_operand2:
+                        self.run(operation.operand_list[0])
+
                 case OpType.CALL:
                     push(None)  # push placeholder (return address)
                     self.run(operation.operand_list[0])
