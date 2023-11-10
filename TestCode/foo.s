@@ -100,6 +100,39 @@ foo:
 	pop	rbp	 #
 	ret	
 	.seh_endproc
+	.globl	loop
+	.def	loop;	.scl	2;	.type	32;	.endef
+	.seh_proc	loop
+loop:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 16	 #,
+	.seh_stackalloc	16
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # x, x
+ # TestCode\foo.c:21:     int sum = 0;
+	mov	DWORD PTR -4[rbp], 0	 # sum,
+ # TestCode\foo.c:22:     while (x > 0)
+	jmp	.L6	 #
+.L7:
+ # TestCode\foo.c:24:         sum += x;
+	mov	eax, DWORD PTR 16[rbp]	 # tmp84, x
+	add	DWORD PTR -4[rbp], eax	 # sum, tmp84
+ # TestCode\foo.c:25:         x -= 1;
+	sub	DWORD PTR 16[rbp], 1	 # x,
+.L6:
+ # TestCode\foo.c:22:     while (x > 0)
+	cmp	DWORD PTR 16[rbp], 0	 # x,
+	jg	.L7	 #,
+ # TestCode\foo.c:27:     return sum;
+	mov	eax, DWORD PTR -4[rbp]	 # _5, sum
+ # TestCode\foo.c:28: }
+	add	rsp, 16	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
 	.globl	fib
 	.def	fib;	.scl	2;	.type	32;	.endef
 	.seh_proc	fib
@@ -114,35 +147,35 @@ fib:
 	.seh_setframe	rbp, 32
 	.seh_endprologue
 	mov	DWORD PTR 32[rbp], ecx	 # x, x
- # TestCode\foo.c:21:     if (x <= 0)
+ # TestCode\foo.c:32:     if (x <= 0)
 	cmp	DWORD PTR 32[rbp], 0	 # x,
-	jg	.L6	 #,
- # TestCode\foo.c:23:         return 0;
+	jg	.L10	 #,
+ # TestCode\foo.c:34:         return 0;
 	mov	eax, 0	 # _5,
-	jmp	.L7	 #
-.L6:
- # TestCode\foo.c:25:     else if(x == 0)
-	cmp	DWORD PTR 32[rbp], 0	 # x,
-	jne	.L8	 #,
- # TestCode\foo.c:27:         return 1;
+	jmp	.L11	 #
+.L10:
+ # TestCode\foo.c:36:     else if(x == 1)
+	cmp	DWORD PTR 32[rbp], 1	 # x,
+	jne	.L12	 #,
+ # TestCode\foo.c:38:         return 1;
 	mov	eax, 1	 # _5,
-	jmp	.L7	 #
-.L8:
- # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+	jmp	.L11	 #
+.L12:
+ # TestCode\foo.c:42:         return fib(x - 1) + fib(x - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp88, x
 	sub	eax, 1	 # _1,
 	mov	ecx, eax	 #, _1
 	call	fib	 #
 	mov	ebx, eax	 # _2,
- # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+ # TestCode\foo.c:42:         return fib(x - 1) + fib(x - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp89, x
 	sub	eax, 2	 # _3,
 	mov	ecx, eax	 #, _3
 	call	fib	 #
- # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+ # TestCode\foo.c:42:         return fib(x - 1) + fib(x - 2);
 	add	eax, ebx	 # _5, _2
-.L7:
- # TestCode\foo.c:33: }
+.L11:
+ # TestCode\foo.c:44: }
 	add	rsp, 40	 #,
 	pop	rbx	 #
 	pop	rbp	 #

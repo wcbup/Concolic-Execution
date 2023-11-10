@@ -14,8 +14,8 @@ class ConcolicExecutor:
         # init register
         self.register_dict["rsp"] = 9000
         self.register_dict["rbp"] = 9000
-        self.register_dict["rbx"] = 9000
         self.register_dict["eax"] = None
+        self.register_dict["ebx"] = None
         self.register_dict["ecx"] = None
         self.register_dict["edx"] = None
         self.register_dict["r8d"] = None
@@ -60,7 +60,7 @@ class ConcolicExecutor:
                 raise Exception(x)
 
         def assign_value(destination: str | Address, value: int) -> None:
-            if not isinstance(value, int):
+            if not isinstance(value, int | None):
                 raise Exception(value)
 
             if isinstance(destination, str):
@@ -72,10 +72,13 @@ class ConcolicExecutor:
             else:
                 raise Exception(destination)
 
+        print()
+        print()
         print("---begin running---", label_name)
         operation_index = self.parser.label_dict[label_name]
         while operation_index < len(self.parser.code_list):
             code = self.parser.operation_list[operation_index]
+            print(f"index: {operation_index}")
             code.print()
             operation = code.operation
 
@@ -193,14 +196,17 @@ class ConcolicExecutor:
 
                 case OpType.JG:
                     if self.cmp_operand1 > self.cmp_operand2:
-                        self.run(operation.operand_list[0])
+                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index -= 1
 
                 case OpType.JNE:
                     if self.cmp_operand1 != self.cmp_operand2:
-                        self.run(operation.operand_list[0])
+                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index -= 1
 
                 case OpType.JMP:
-                    self.run(operation.operand_list[0])
+                    operation_index = self.parser.label_dict[operation.operand_list[0]]
+                    operation_index -= 1
 
                 case OpType.CALL:
                     push(operation_index)  # push return address
@@ -235,8 +241,9 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [0])
+    executor = ConcolicExecutor(parser, [10])
+    # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("foo")
-    # executor.run("fib")
-    # executor.run("sum", [1, 2, 3, 4, 5, 6, 7])
+    executor.run("fib")
+    # executor.run("loop")
+    # executor.run("sum")

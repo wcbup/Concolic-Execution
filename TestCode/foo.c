@@ -16,13 +16,24 @@ int foo(int a)
     return a + b + c;
 }
 
+int loop(int x)
+{
+    int sum = 0;
+    while (x > 0)
+    {
+        sum += x;
+        x -= 1;
+    }
+    return sum;
+}
+
 int fib(int x)
 {
     if (x <= 0)
     {
         return 0;
     }
-    else if(x == 0)
+    else if(x == 1)
     {
         return 1;
     }

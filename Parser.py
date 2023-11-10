@@ -332,6 +332,10 @@ class Parser:
             self.assembly_str_list = list(
                 filter(lambda a: a != "", self.assembly_str_list)
             )
+            # replace rbx to ebx
+            self.assembly_str_list = [
+                i.replace("rbx", "ebx") for i in self.assembly_str_list
+            ]
 
         self.code_list: List[Code] = []
         for code_str in self.assembly_str_list:
@@ -359,6 +363,11 @@ class Parser:
                     if self.label_dict[label] == i:
                         print(f"---{label}---")
             self.operation_list[i].print()
+        
+        # save operation
+        with open("./tmp.s", "w") as f:
+            for operation in self.operation_list:
+                f.write(operation.raw_str + "\n")
 
 
 
