@@ -73,7 +73,9 @@ class ConcolicExecutor:
                 raise Exception(destination)
 
         print("---begin running---", label_name)
-        for code in self.parser.code_dict[label_name]:
+        operation_index = self.parser.label_dict[label_name]
+        while operation_index < len(self.parser.code_list):
+            code = self.parser.operation_list[operation_index]
             code.print()
             operation = code.operation
 
@@ -124,7 +126,6 @@ class ConcolicExecutor:
                 case OpType.IMUL:
                     if len(operation.operand_list) != 3:
                         raise Exception
-                    operand_list: List[int | str] = []
                     for i in operation.operand_list:
                         print(f" {i}: {get_value(i)}")
                     result = get_value(operation.operand_list[1]) * get_value(
@@ -217,6 +218,8 @@ class ConcolicExecutor:
                 case _:
                     raise Exception(operation.type)
 
+            operation_index += 1
+
         raise Exception
 
 
@@ -228,6 +231,6 @@ if __name__ == "__main__":
 
     executor = ConcolicExecutor(parser, [0])
 
-    # executor.run("foo")
-    executor.run("fib")
+    executor.run("foo")
+    # executor.run("fib")
     # executor.run("sum", [1, 2, 3, 4, 5, 6, 7])

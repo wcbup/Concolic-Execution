@@ -276,7 +276,13 @@ class Code:
                         )
 
                     case OpType.SUB:
-                        print(" ", self.operation.operand_list)
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
 
                     case OpType.ADD:
                         print(
