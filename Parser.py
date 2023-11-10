@@ -22,6 +22,7 @@ class OpType(Enum):
     CDQ = 8  # edx = eax
     IDIV = 9
     IMUL = 10
+    CALL = 11
 
 
 class Address:
@@ -50,6 +51,13 @@ class Operation:
             self.type = OpType.PUSH
             result = re.search(r"(\bpush\b)\s+(\b\w+)", raw_str)
             self.operand_list = [result.group(2)]
+
+        elif "call" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.CALL
+            result = re.search(r"\bcall\b\s+(\b\w+)", raw_str)
+            self.operand_list = [result.group(1)]
 
         elif "mov" in raw_str:
             self.type = OpType.MOV
@@ -95,13 +103,13 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "add" in raw_str:
-            if "[" in raw_str:
-                raise Exception(raw_str)
             self.type = OpType.ADD
-            result = re.search(r"add\s+(\w+),\s+([\w]+)", raw_str)
+            result = re.search(r"\badd\b\s+(\b.+),\s+(\b.+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
-                if operand_str.isdigit():
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                elif operand_str.isdigit():
                     self.operand_list.append(int(operand_str))
                 else:
                     self.operand_list.append(operand_str)
@@ -159,6 +167,9 @@ class Code:
                 match self.operation.type:
                     case OpType.PUSH:
                         print(" ", self.operation.operand_list)
+                    
+                    case OpType.CALL:
+                        print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
                         print(
@@ -191,7 +202,13 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.ADD:
-                        print(" ", self.operation.operand_list)
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
 
                     case OpType.SAL:
                         print(" ", self.operation.operand_list)
