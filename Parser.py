@@ -23,6 +23,11 @@ class OpType(Enum):
     IDIV = 9
     IMUL = 10
     CALL = 11
+    LEA = 12  # load effective address
+    CMP = 13
+    JG = 14
+    JMP = 15
+    JNE = 16
 
 
 class Address:
@@ -126,6 +131,18 @@ class Operation:
                 else:
                     self.operand_list.append(operand_str)
 
+        elif "lea" in raw_str:
+            self.type = OpType.LEA
+            result = re.search(r"\blea\b\s+(\b.+),\s+(\b.+)", raw_str)
+            for i in range(1, 3):
+                operand_str = result.group(i)
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                elif operand_str.isdigit():
+                    raise Exception(operand_str)
+                else:
+                    self.operand_list.append(operand_str)
+
         elif "pop" in raw_str:
             if "[" in raw_str:
                 raise Exception(raw_str)
@@ -138,6 +155,18 @@ class Operation:
 
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
+
+        elif "cmp" in raw_str:
+            self.type = OpType.CMP
+
+        elif "jg" in raw_str:
+            self.type = OpType.JG
+
+        elif "jmp" in raw_str:
+            self.type = OpType.JMP
+
+        elif "jne" in raw_str:
+            self.type = OpType.JNE
 
         else:
             raise Exception(raw_str)
@@ -167,11 +196,20 @@ class Code:
                 match self.operation.type:
                     case OpType.PUSH:
                         print(" ", self.operation.operand_list)
-                    
+
                     case OpType.CALL:
                         print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
+
+                    case OpType.LEA:
                         print(
                             " ",
                             [

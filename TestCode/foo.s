@@ -100,4 +100,52 @@ foo:
 	pop	rbp	 #
 	ret	
 	.seh_endproc
+	.globl	fib
+	.def	fib;	.scl	2;	.type	32;	.endef
+	.seh_proc	fib
+fib:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	push	rbx	 #
+	.seh_pushreg	rbx
+	sub	rsp, 40	 #,
+	.seh_stackalloc	40
+	lea	rbp, 32[rsp]	 #,
+	.seh_setframe	rbp, 32
+	.seh_endprologue
+	mov	DWORD PTR 32[rbp], ecx	 # x, x
+ # TestCode\foo.c:21:     if (x <= 0)
+	cmp	DWORD PTR 32[rbp], 0	 # x,
+	jg	.L6	 #,
+ # TestCode\foo.c:23:         return 0;
+	mov	eax, 0	 # _5,
+	jmp	.L7	 #
+.L6:
+ # TestCode\foo.c:25:     else if(x == 0)
+	cmp	DWORD PTR 32[rbp], 0	 # x,
+	jne	.L8	 #,
+ # TestCode\foo.c:27:         return 1;
+	mov	eax, 1	 # _5,
+	jmp	.L7	 #
+.L8:
+ # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+	mov	eax, DWORD PTR 32[rbp]	 # tmp88, x
+	sub	eax, 1	 # _1,
+	mov	ecx, eax	 #, _1
+	call	fib	 #
+	mov	ebx, eax	 # _2,
+ # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+	mov	eax, DWORD PTR 32[rbp]	 # tmp89, x
+	sub	eax, 2	 # _3,
+	mov	ecx, eax	 #, _3
+	call	fib	 #
+ # TestCode\foo.c:31:         return fib(x - 1) + fib(x - 2);
+	add	eax, ebx	 # _5, _2
+.L7:
+ # TestCode\foo.c:33: }
+	add	rsp, 40	 #,
+	pop	rbx	 #
+	pop	rbp	 #
+	ret	
+	.seh_endproc
 	.ident	"GCC: (Rev10, Built by MSYS2 project) 12.2.0"
