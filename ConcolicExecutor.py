@@ -4,12 +4,11 @@ from typing import Dict, List
 
 
 class ConcolicExecutor:
-    def __init__(self, parser: Parser) -> None:
+    def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
         self.parser = parser
         self.register_dict: Dict[str, int | None] = {}
         self.memory_array: List[None | int | str] = [None] * 10_000
 
-    def run(self, label_name: str, parameter_list: List[int]) -> int | None:
         # init return address
         self.register_dict["ret"] = None
         # init register
@@ -18,7 +17,26 @@ class ConcolicExecutor:
         self.register_dict["eax"] = None
         self.register_dict["ecx"] = None
         self.register_dict["edx"] = None
+        self.register_dict["r8d"] = None
+        self.register_dict["r9d"] = None
 
+        # init parameters
+        para_len = len(parameter_list)
+        if para_len >= 1:
+            self.register_dict["ecx"] = parameter_list[0]
+        if para_len >= 2:
+            self.register_dict["edx"] = parameter_list[1]
+        if para_len >= 3:
+            self.register_dict["r8d"] = parameter_list[2]
+        if para_len >= 4:
+            self.register_dict["r9d"] = parameter_list[3]
+        if para_len > 4:
+            for i in range(4, para_len):
+                self.memory_array[
+                    self.register_dict["rsp"] + 8 * (i + 1)
+                ] = parameter_list[i]
+
+    def run(self, label_name: str) -> int | None:
         def push(x: int | None) -> None:
             # push x on the stack
             self.register_dict["rsp"] -= 8
@@ -52,22 +70,6 @@ class ConcolicExecutor:
                 ] = value
             else:
                 raise Exception(destination)
-
-        # init parameters
-        para_len = len(parameter_list)
-        if para_len >= 1:
-            self.register_dict["ecx"] = parameter_list[0]
-        if para_len >= 2:
-            self.register_dict["edx"] = parameter_list[1]
-        if para_len >= 3:
-            self.register_dict["r8d"] = parameter_list[2]
-        if para_len >= 4:
-            self.register_dict["r9d"] = parameter_list[3]
-        if para_len > 4:
-            for i in range(4, para_len):
-                self.memory_array[
-                    self.register_dict["rsp"] + 8 * (i + 1)
-                ] = parameter_list[i]
 
         print("---begin running---", label_name)
         for code in self.parser.code_dict[label_name]:
@@ -180,6 +182,8 @@ class ConcolicExecutor:
                 case _:
                     raise Exception(operation.type)
 
+        raise Exception
+
 
 # test code
 if __name__ == "__main__":
@@ -187,7 +191,7 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser)
+    executor = ConcolicExecutor(parser, [2])
 
-    # executor.run("foo", [2])
-    executor.run("sum", [1, 2, 3, 4, 5, 6, 7])
+    executor.run("foo")
+    # executor.run("sum", [1, 2, 3, 4, 5, 6, 7])
