@@ -7,7 +7,7 @@ class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
         self.parser = parser
         self.register_dict: Dict[str, int | None] = {}
-        self.memory_array: List[None | int | str] = [None] * 10_000
+        self.memory_array: List[None | int] = [None] * 10_000
 
         # init return address
         self.register_dict["ret"] = None
@@ -169,11 +169,15 @@ class ConcolicExecutor:
                     # print(f" {source}: {get_value(source)}")
                     # assign_value(destination, get_value(source))
                     # print(f" {destination}: {get_value(destination)}")
+                
+                case OpType.CALL:
+                    push(None) # push placeholder (return address)
+                    self.run(operation.operand_list[0])
 
                 case OpType.RET:
                     result_address: str | None = pop()
                     if result_address is None:
-                        print(" Finishing!")
+                        print(" Returning!")
                         print(f" result is {get_value('eax')}")
                         return get_value("eax")
                     else:
