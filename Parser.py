@@ -143,6 +143,18 @@ class Operation:
                 else:
                     self.operand_list.append(operand_str)
 
+        elif "cmp" in raw_str:
+            self.type = OpType.CMP
+            result = re.search(r"\bcmp\b\s+(\b.+),\s+(\b.+)", raw_str)
+            for i in range(1, 3):
+                operand_str = result.group(i)
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                elif operand_str.isdigit():
+                    self.operand_list.append(int(operand_str))
+                else:
+                    self.operand_list.append(operand_str)
+
         elif "pop" in raw_str:
             if "[" in raw_str:
                 raise Exception(raw_str)
@@ -155,9 +167,6 @@ class Operation:
 
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
-
-        elif "cmp" in raw_str:
-            self.type = OpType.CMP
 
         elif "jg" in raw_str:
             self.type = OpType.JG
@@ -210,6 +219,15 @@ class Code:
                         )
 
                     case OpType.LEA:
+                        print(
+                            " ",
+                            [
+                                str(i) if isinstance(i, Address) else i
+                                for i in self.operation.operand_list
+                            ],
+                        )
+
+                    case OpType.CMP:
                         print(
                             " ",
                             [
