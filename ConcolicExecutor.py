@@ -187,8 +187,12 @@ class ConcolicExecutor:
                     operand2 = operation.operand_list[1]
                     print(f" {operand1}: {get_value(operand1)}")
                     print(f" {operand2}: {get_value(operand2)}")
-                    self.cmp_operand1 = operand1
-                    self.cmp_operand2 = operand2
+                    self.cmp_operand1 = get_value(operand1)
+                    self.cmp_operand2 = get_value(operand2)
+
+                case OpType.JG:
+                    if self.cmp_operand1 > self.cmp_operand2:
+                        self.run(operation.operand_list[0])
 
                 case OpType.CALL:
                     push(None)  # push placeholder (return address)
