@@ -14,6 +14,7 @@ class ConcolicExecutor:
         # init register
         self.register_dict["rsp"] = 9000
         self.register_dict["rbp"] = 9000
+        self.register_dict["rbx"] = None
         self.register_dict["eax"] = None
         self.register_dict["ecx"] = None
         self.register_dict["edx"] = None
@@ -161,6 +162,17 @@ class ConcolicExecutor:
                     assign_value(operation.operand_list[0], result)
                     print(f" {operand1}: {get_value(operand1)}")
 
+                case OpType.LEA:
+                    operand1 = operation.operand_list[0]
+                    operand2 = operation.operand_list[1]
+                    if not isinstance(operand2, Address):
+                        raise Exception
+                    print(f" {operand1}: {get_value(operand1)}")
+                    print(f" {operand2}: {get_value(operand2.operand)}")
+                    result = get_value(operand2.operand) + operand2.offset
+                    assign_value(operation.operand_list[0], result)
+                    print(f" {operand1}: {get_value(operand1)}")
+
                 case OpType.CDQ:
                     pass
                     # destination = "edx"
@@ -169,9 +181,9 @@ class ConcolicExecutor:
                     # print(f" {source}: {get_value(source)}")
                     # assign_value(destination, get_value(source))
                     # print(f" {destination}: {get_value(destination)}")
-                
+
                 case OpType.CALL:
-                    push(None) # push placeholder (return address)
+                    push(None)  # push placeholder (return address)
                     self.run(operation.operand_list[0])
 
                 case OpType.RET:
@@ -195,7 +207,8 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [2090])
+    executor = ConcolicExecutor(parser, [5])
 
-    executor.run("foo")
+    # executor.run("foo")
+    executor.run("fib")
     # executor.run("sum", [1, 2, 3, 4, 5, 6, 7])
