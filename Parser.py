@@ -294,10 +294,10 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.CDQ:
-                        print()
+                        print(" ", self.operation.operand_list)
 
                     case OpType.RET:
-                        print()
+                        print(" ", self.operation.operand_list)
 
                     case _:
                         raise Exception(self.operation.type)
@@ -336,22 +336,24 @@ class Parser:
         for code in self.code_list:
             code.print()
 
-        self.code_dict: Dict[str, List[Code]] = {}
-        self.label_list: List[str] = []
+        self.label_dict: Dict[str, int] = {}
+        self.operation_list: List[Code] = []
         for code in self.code_list:
             if code.type == CodeType.LABEL:
-                self.code_dict[code.label_str] = []
-                current_label_str = code.label_str
-                self.label_list.append(current_label_str)
+                self.label_dict[code.label_str] = len(self.operation_list)
             else:
-                self.code_dict[current_label_str].append(code)
+                self.operation_list.append(code)
 
-        for labe_str in self.code_dict:
-            print(f"---{labe_str}---")
-            for code in self.code_dict[labe_str]:
-                code.print()
-        print("---label list---")
-        print(self.label_list)
+        # record the location of the label
+        print("----complete code----")
+        print()
+        for i in range(len(self.operation_list)):
+            if i in self.label_dict.values():
+                for label in self.label_dict.keys():
+                    if self.label_dict[label] == i:
+                        print(f"---{label}---")
+            self.operation_list[i].print()
+
 
 
 # test code
