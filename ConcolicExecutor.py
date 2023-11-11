@@ -42,6 +42,21 @@ class ConcolicVar:
             else:
                 return ConcolicVar(result_value, self.variable + other.variable)
 
+    def __lshift__(self, other: ConcolicVar) -> ConcolicVar:
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+        result_value = self.value * 2**other.value
+        if self.variable == None:
+            if other.variable == None:
+                return ConcolicVar(result_value)
+            else:
+                return ConcolicVar(result_value, self.value * 2**other.variable)
+        else:
+            if other.variable == None:
+                return ConcolicVar(result_value, self.variable * 2**other.value)
+            else:
+                return ConcolicVar(result_value, self.variable * 2**other.variable)
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:

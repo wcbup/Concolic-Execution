@@ -2,5 +2,6 @@ from z3 import *
 
 a = Int('x')
 n = a >= 3
-x = a - 1
+x = 2 ** a
+
 print(x)
