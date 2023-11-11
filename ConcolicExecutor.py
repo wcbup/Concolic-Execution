@@ -148,6 +148,29 @@ class ConcolicVar:
 
         return result, constraint
 
+    def __ge__(self, other: ConcolicVar) -> Tuple[bool, BoolRef]:
+        """
+        return (result: bool, constraint: BoolRef)
+        """
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+
+        result = self.value >= other.value
+        if self.variable == None:
+            if other.variable == None:
+                constraint = True
+            else:
+                constraint = self.value >= other.variable
+        else:
+            if other.variable == None:
+                constraint = self.variable >= other.value
+            else:
+                constraint = self.variable >= other.variable
+        if not result and constraint is not True:
+            constraint = Not(constraint)
+
+        return result, constraint
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser) -> None:
@@ -374,15 +397,17 @@ class ConcolicExecutor:
                     print(f" constraint: {total_constraint}")
 
                 case OpType.JNS:
-                    raise Exception
-                    if self.cmp_operand1 >= self.cmp_operand2:
+                    print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 >= self.cmp_operand2
+                    if result:
                         operation_index = self.parser.label_dict[
                             operation.operand_list[0]
                         ]
                         operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    print(f" constraint: {total_constraint}")
 
                 case OpType.JMP:
-                    raise Exception
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
 
@@ -400,8 +425,8 @@ class ConcolicExecutor:
                     if result_address is None:
                         print(" Finishing!")
                         print(f" Result is {get_value('eax')}")
-                        print(f" Constraint is {simplify(total_constraint)}")
-                        return get_value("eax"), simplify(total_constraint)
+                        print(f" Constraint is {total_constraint}")
+                        return get_value("eax"), total_constraint
                     elif isinstance(result_address, int):
                         print(" Returning")
                         print(f" result is {get_value('eax')}")
@@ -420,15 +445,14 @@ class ConcolicExecutor:
 
 # test code
 if __name__ == "__main__":
-    parser = Parser("TestCode\\foo.c")
+    # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\userDefinedException.c")
 
     executor = ConcolicExecutor(parser)
-    # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    # executor.run("foo", [32766])
-    executor.run("fib", [1])
-    # executor.run("fib3")
+    # executor.run("loop", [8])
+    # executor.run("loop", [3])
+    executor.run("fib2", [10])
     # executor.run("loop")
     # executor.run("sum")
