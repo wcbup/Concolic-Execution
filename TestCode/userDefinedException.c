@@ -1,6 +1,9 @@
 #include <assert.h>
 
-void userDefinedException();
+void userDefinedException()
+{
+    return;
+}
 
 
 int fib1(int a)

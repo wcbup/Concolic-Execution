@@ -169,6 +169,10 @@ class ConcolicExecutor:
                 case OpType.LEA:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
+                    if operand1 == "rax":
+                        print(" Assertion failed!")
+                        print(" Exiting!")
+                        return
                     if not isinstance(operand2, Address):
                         raise Exception
                     print(f" {operand1}: {get_value(operand1)}")
@@ -253,6 +257,6 @@ if __name__ == "__main__":
     executor = ConcolicExecutor(parser, [-1])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("fib2")
+    executor.run("fib3")
     # executor.run("loop")
     # executor.run("sum")

@@ -1,16 +1,21 @@
 push	rbp
+mov	rbp, rsp
+nop
+pop	rbp
+ret
+push	rbp
 push	ebx
 sub	rsp, 40
 lea	rbp, 32[rsp]
 mov	DWORD PTR 32[rbp], ecx
 cmp	DWORD PTR 32[rbp], 0
-jg	.L2
+jg	.L4
 mov	eax, 0
-jmp	.L3
+jmp	.L5
 cmp	DWORD PTR 32[rbp], 1
-jne	.L4
+jne	.L6
 mov	eax, 1
-jmp	.L3
+jmp	.L5
 mov	eax, DWORD PTR 32[rbp]
 sub	eax, 1
 mov	ecx, eax
@@ -31,16 +36,16 @@ sub	rsp, 40
 lea	rbp, 32[rsp]
 mov	DWORD PTR 32[rbp], ecx
 cmp	DWORD PTR 32[rbp], 0
-jg	.L6
+jg	.L8
 cmp	DWORD PTR 32[rbp], 0
-jns	.L7
+jns	.L9
 call	userDefinedException
 mov	eax, 0
-jmp	.L8
+jmp	.L10
 cmp	DWORD PTR 32[rbp], 1
-jne	.L9
+jne	.L11
 mov	eax, 1
-jmp	.L8
+jmp	.L10
 mov	eax, DWORD PTR 32[rbp]
 sub	eax, 1
 mov	ecx, eax
@@ -61,8 +66,8 @@ sub	rsp, 40
 lea	rbp, 32[rsp]
 mov	DWORD PTR 32[rbp], ecx
 cmp	DWORD PTR 32[rbp], 0
-jns	.L13
-mov	r8d, 44
+jns	.L15
+mov	r8d, 47
 lea	rax, .LC0[rip]
 mov	rdx, rax
 lea	rax, .LC1[rip]
@@ -70,16 +75,16 @@ mov	rcx, rax
 mov	rax, QWORD PTR __imp__assert[rip]
 call	rax
 cmp	DWORD PTR 32[rbp], 0
-jg	.L14
+jg	.L16
 cmp	DWORD PTR 32[rbp], 0
-jns	.L15
+jns	.L17
 call	userDefinedException
 mov	eax, 0
-jmp	.L16
+jmp	.L18
 cmp	DWORD PTR 32[rbp], 1
-jne	.L17
+jne	.L19
 mov	eax, 1
-jmp	.L16
+jmp	.L18
 mov	eax, DWORD PTR 32[rbp]
 sub	eax, 1
 mov	ecx, eax
