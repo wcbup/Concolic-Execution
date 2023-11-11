@@ -58,6 +58,10 @@ int fib3(int a)
     }
     else
     {
+        if (a > 10)
+        {
+            userDefinedException();
+        }
         return fib3(a - 1) + fib3(a - 2);
     }
 }

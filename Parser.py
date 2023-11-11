@@ -30,6 +30,7 @@ class OpType(Enum):
     JNE = 16
     JNS = 17
     NOP = 18
+    JLE = 19
 
 
 class Address:
@@ -92,6 +93,13 @@ class Operation:
                 raise Exception(raw_str)
             self.type = OpType.JNS
             result = re.search(r"\bjns\b\s+([\w\.]+)", raw_str)
+            self.operand_list = [result.group(1)]
+
+        elif "jle" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JLE
+            result = re.search(r"\bjle\b\s+([\w\.]+)", raw_str)
             self.operand_list = [result.group(1)]
 
         elif "mov" in raw_str:
@@ -245,6 +253,9 @@ class Code:
                     case OpType.JNS:
                         print(" ", self.operation.operand_list)
 
+                    case OpType.JLE:
+                        print(" ", self.operation.operand_list)
+
                     case OpType.MOV:
                         print(
                             " ",
@@ -381,12 +392,11 @@ class Parser:
                     if self.label_dict[label] == i:
                         print(f"---{label}---")
             self.operation_list[i].print()
-        
+
         # save operation
         with open("./tmp.s", "w") as f:
             for operation in self.operation_list:
                 f.write(operation.raw_str + "\n")
-
 
 
 # test code

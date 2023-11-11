@@ -176,21 +176,27 @@ fib3:
 	mov	eax, 1	 # _5,
 	jmp	.L18	 #
 .L19:
- # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:61:         if (a > 10)
+	cmp	DWORD PTR 32[rbp], 10	 # a,
+	jle	.L20	 #,
+ # TestCode\userDefinedException.c:63:             userDefinedException();
+	call	userDefinedException	 #
+.L20:
+ # TestCode\userDefinedException.c:65:         return fib3(a - 1) + fib3(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp93, a
 	sub	eax, 1	 # _1,
 	mov	ecx, eax	 #, _1
 	call	fib3	 #
 	mov	ebx, eax	 # _2,
- # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:65:         return fib3(a - 1) + fib3(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp94, a
 	sub	eax, 2	 # _3,
 	mov	ecx, eax	 #, _3
 	call	fib3	 #
- # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:65:         return fib3(a - 1) + fib3(a - 2);
 	add	eax, ebx	 # _5, _2
 .L18:
- # TestCode\userDefinedException.c:63: }
+ # TestCode\userDefinedException.c:67: }
 	add	rsp, 40	 #,
 	pop	rbx	 #
 	pop	rbp	 #
