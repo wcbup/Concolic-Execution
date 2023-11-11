@@ -72,6 +72,21 @@ class ConcolicVar:
             else:
                 return ConcolicVar(result_value, self.variable / other.variable)
 
+    def __mod__(self, other: ConcolicVar) -> ConcolicVar:
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+        result_value = self.value % other.value
+        if self.variable == None:
+            if other.variable == None:
+                return ConcolicVar(result_value)
+            else:
+                return ConcolicVar(result_value, self.value % other.variable)
+        else:
+            if other.variable == None:
+                return ConcolicVar(result_value, self.variable % other.value)
+            else:
+                return ConcolicVar(result_value, self.variable % other.variable)
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
