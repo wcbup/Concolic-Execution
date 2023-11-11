@@ -28,6 +28,7 @@ class OpType(Enum):
     JG = 14
     JMP = 15
     JNE = 16
+    JNS = 17
 
 
 class Address:
@@ -83,6 +84,13 @@ class Operation:
                 raise Exception(raw_str)
             self.type = OpType.JNE
             result = re.search(r"\bjne\b\s+([\w\.]+)", raw_str)
+            self.operand_list = [result.group(1)]
+
+        elif "jns" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JNS
+            result = re.search(r"\bjns\b\s+([\w\.]+)", raw_str)
             self.operand_list = [result.group(1)]
 
         elif "mov" in raw_str:
@@ -154,7 +162,7 @@ class Operation:
 
         elif "lea" in raw_str:
             self.type = OpType.LEA
-            result = re.search(r"\blea\b\s+(\b.+),\s+(\b.+)", raw_str)
+            result = re.search(r"\blea\b\s+(.+),\s+(.+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
                 if "[" in operand_str:
@@ -228,6 +236,9 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.JNE:
+                        print(" ", self.operation.operand_list)
+
+                    case OpType.JNS:
                         print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
@@ -373,6 +384,6 @@ class Parser:
 
 # test code
 if __name__ == "__main__":
-    parser = Parser("TestCode\\foo.c")
+    # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\userDefinedException.c")

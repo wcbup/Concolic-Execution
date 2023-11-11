@@ -241,7 +241,7 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [10])
+    executor = ConcolicExecutor(parser, [15])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
     executor.run("fib")
