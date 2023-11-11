@@ -21,7 +21,7 @@ pop	rbp
 ret
 push	rbp
 mov	rbp, rsp
-sub	rsp, 16
+sub	rsp, 80
 mov	DWORD PTR 16[rbp], ecx
 mov	DWORD PTR -4[rbp], 2
 mov	DWORD PTR -8[rbp], 3
@@ -36,12 +36,25 @@ cdq
 idiv	DWORD PTR -4[rbp]
 imul	eax, eax, 77
 mov	DWORD PTR -8[rbp], eax
+mov	r9d, DWORD PTR -4[rbp]
+mov	r8d, DWORD PTR -8[rbp]
+mov	edx, DWORD PTR -4[rbp]
+mov	eax, DWORD PTR -4[rbp]
+mov	ecx, DWORD PTR -4[rbp]
+mov	DWORD PTR 48[rsp], ecx
+mov	ecx, DWORD PTR -4[rbp]
+mov	DWORD PTR 40[rsp], ecx
+mov	ecx, DWORD PTR 16[rbp]
+mov	DWORD PTR 32[rsp], ecx
+mov	ecx, eax
+call	sum
+add	DWORD PTR -8[rbp], eax
 mov	edx, DWORD PTR 16[rbp]
 mov	eax, DWORD PTR -4[rbp]
 add	edx, eax
 mov	eax, DWORD PTR -8[rbp]
 add	eax, edx
-add	rsp, 16
+add	rsp, 80
 pop	rbp
 ret
 push	rbp

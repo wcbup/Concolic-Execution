@@ -151,8 +151,8 @@ class ConcolicExecutor:
 
         def pop() -> int | None | str:
             # pop the stack
-            value = self.memory_array[self.register_dict["rsp"]]
-            self.register_dict["rsp"] += 8
+            value = self.memory_array[self.register_dict["rsp"].value]
+            self.register_dict["rsp"] = self.register_dict["rsp"] + ConcolicVar(8)
             return value
 
         def get_value(x: int | str | Address) -> ConcolicVar | None:
