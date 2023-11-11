@@ -29,6 +29,7 @@ class OpType(Enum):
     JMP = 15
     JNE = 16
     JNS = 17
+    NOP = 18
 
 
 class Address:
@@ -197,6 +198,9 @@ class Operation:
         elif "cdq" in raw_str:
             self.type = OpType.CDQ
 
+        elif "nop" in raw_str:
+            self.type = OpType.NOP
+
         else:
             raise Exception(raw_str)
 
@@ -314,6 +318,9 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.RET:
+                        print(" ", self.operation.operand_list)
+
+                    case OpType.NOP:
                         print(" ", self.operation.operand_list)
 
                     case _:
