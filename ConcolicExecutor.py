@@ -8,7 +8,7 @@ class ConcolicVar:
     def __init__(self, value: int, variable: None | ArithRef = None) -> None:
         self.value = value
         self.variable = variable
-    
+
     def __str__(self) -> str:
         return f"({self.value}, {self.variable})"
 
@@ -82,7 +82,7 @@ class ConcolicExecutor:
 
         def get_value(x: int | str | Address) -> int | None:
             if isinstance(x, int):
-                return x
+                return ConcolicVar(x)
             elif isinstance(x, str):
                 return self.register_dict[x]
             elif isinstance(x, Address):
@@ -90,8 +90,8 @@ class ConcolicExecutor:
             else:
                 raise Exception(x)
 
-        def assign_value(destination: str | Address, value: int) -> None:
-            if not isinstance(value, int | None):
+        def assign_value(destination: str | Address, value: ConcolicVar | None) -> None:
+            if not isinstance(value, ConcolicVar | None):
                 raise Exception(value)
 
             if isinstance(destination, str):
