@@ -214,6 +214,10 @@ class ConcolicExecutor:
                     operation_index -= 1
 
                 case OpType.CALL:
+                    if operation.operand_list[0] == "userDefinedException":
+                        print(" Raise userDefinedException!")
+                        print(" Exiting!")
+                        return
                     push(operation_index)  # push return address
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
@@ -246,7 +250,7 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [10])
+    executor = ConcolicExecutor(parser, [-1])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
     executor.run("fib2")
