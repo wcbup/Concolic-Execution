@@ -179,6 +179,10 @@ class ConcolicExecutor:
         self.memory_array: List[None | ConcolicVar] = [None] * 10_000
 
     def run(self, label_name: str, para_list: List[int]) -> Tuple[None | int, BoolRef]:
+        """
+        return result: None | int, constraint: BoolRef
+        if result is None, the execution fails
+        """
         total_constraint: BoolRef = True
 
         # reset the state
@@ -414,8 +418,9 @@ class ConcolicExecutor:
                 case OpType.CALL:
                     if operation.operand_list[0] == "userDefinedException":
                         print(" Raise userDefinedException!")
+                        print(f" Constraint is {total_constraint}")
                         print(" Exiting!")
-                        return
+                        return None, total_constraint
                     push(operation_index)  # push return address
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
@@ -442,6 +447,37 @@ class ConcolicExecutor:
 
         raise Exception
 
+    def test(self, label_name: str, para_number: int, max_loop: int) -> bool:
+        """
+        test the function
+        return True is not harmful input can be found
+        """
+        print()
+        print()
+        print("---begin testing---")
+        solver = Solver()
+        para_var_list: List[ArithRef] = []
+        for i in range(para_number):
+            tmp_x = Int(f"x{i}")
+            para_var_list.append(tmp_x)
+            solver.add(tmp_x > -2147483648, tmp_x < 2147483647)
+
+        index = 0
+        while index < max_loop and solver.check() == sat:
+            model = solver.model()
+            para_list: List[int] = [model[i].as_long() for i in model.decls()]
+            result, constraint = self.run(label_name, para_list)
+            solver.add(Not(constraint))
+            if result == None:
+                print("Find an input that can cause error!")
+                print(para_list)
+                return False
+            print("Current Constraint:")
+            print(solver.assertions())
+            index += 1
+        
+        return True
+
 
 # test code
 if __name__ == "__main__":
@@ -453,6 +489,8 @@ if __name__ == "__main__":
 
     # executor.run("loop", [8])
     # executor.run("loop", [3])
-    executor.run("fib2", [10])
+    # executor.run("fib2", [-1])
     # executor.run("loop")
     # executor.run("sum")
+
+    executor.test("fib2", 1, 5)

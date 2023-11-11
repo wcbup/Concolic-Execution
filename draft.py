@@ -16,3 +16,5 @@ print(simplify(Not(And(x0 < 11, b))))
 print(b is not True)
 if (False, b):
     print(True)
+
+print(solver.assertions())
