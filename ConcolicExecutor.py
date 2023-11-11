@@ -204,6 +204,11 @@ class ConcolicExecutor:
                         operation_index = self.parser.label_dict[operation.operand_list[0]]
                         operation_index -= 1
 
+                case OpType.JNS:
+                    if self.cmp_operand1 >= self.cmp_operand2:
+                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index -= 1
+
                 case OpType.JMP:
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
@@ -237,13 +242,13 @@ class ConcolicExecutor:
 
 # test code
 if __name__ == "__main__":
-    parser = Parser("TestCode\\foo.c")
+    # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [15])
+    executor = ConcolicExecutor(parser, [10])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("fib")
+    executor.run("fib2")
     # executor.run("loop")
     # executor.run("sum")
