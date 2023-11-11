@@ -125,6 +125,29 @@ class ConcolicVar:
 
         return result, constraint
 
+    def __ne__(self, other: ConcolicVar) -> Tuple[bool, BoolRef]:
+        """
+        return (result: bool, constraint: BoolRef)
+        """
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+
+        result = self.value != other.value
+        if self.variable == None:
+            if other.variable == None:
+                constraint = True
+            else:
+                constraint = self.value != other.variable
+        else:
+            if other.variable == None:
+                constraint = self.variable != other.value
+            else:
+                constraint = self.variable != other.variable
+        if not result and constraint is not True:
+            constraint = Not(constraint)
+
+        return result, constraint
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser) -> None:
