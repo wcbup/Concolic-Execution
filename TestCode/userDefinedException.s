@@ -35,35 +35,35 @@ fib1:
 	.seh_setframe	rbp, 32
 	.seh_endprologue
 	mov	DWORD PTR 32[rbp], ecx	 # a, a
- # TestCode\userDefinedException.c:11:     if (a <= 0)
+ # TestCode\userDefinedException.c:10:     if (a <= 0)
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jg	.L4	 #,
- # TestCode\userDefinedException.c:13:         return 0;
+ # TestCode\userDefinedException.c:12:         return 0;
 	mov	eax, 0	 # _5,
 	jmp	.L5	 #
 .L4:
- # TestCode\userDefinedException.c:15:     else if (a == 1)
+ # TestCode\userDefinedException.c:14:     else if (a == 1)
 	cmp	DWORD PTR 32[rbp], 1	 # a,
 	jne	.L6	 #,
- # TestCode\userDefinedException.c:17:         return 1;
+ # TestCode\userDefinedException.c:16:         return 1;
 	mov	eax, 1	 # _5,
 	jmp	.L5	 #
 .L6:
- # TestCode\userDefinedException.c:21:         return fib1(a - 1) + fib1(a - 2);
+ # TestCode\userDefinedException.c:20:         return fib1(a - 1) + fib1(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp88, a
 	sub	eax, 1	 # _1,
 	mov	ecx, eax	 #, _1
 	call	fib1	 #
 	mov	ebx, eax	 # _2,
- # TestCode\userDefinedException.c:21:         return fib1(a - 1) + fib1(a - 2);
+ # TestCode\userDefinedException.c:20:         return fib1(a - 1) + fib1(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp89, a
 	sub	eax, 2	 # _3,
 	mov	ecx, eax	 #, _3
 	call	fib1	 #
- # TestCode\userDefinedException.c:21:         return fib1(a - 1) + fib1(a - 2);
+ # TestCode\userDefinedException.c:20:         return fib1(a - 1) + fib1(a - 2);
 	add	eax, ebx	 # _5, _2
 .L5:
- # TestCode\userDefinedException.c:23: }
+ # TestCode\userDefinedException.c:22: }
 	add	rsp, 40	 #,
 	pop	rbx	 #
 	pop	rbp	 #
@@ -83,41 +83,41 @@ fib2:
 	.seh_setframe	rbp, 32
 	.seh_endprologue
 	mov	DWORD PTR 32[rbp], ecx	 # a, a
- # TestCode\userDefinedException.c:27:     if (a <= 0)
+ # TestCode\userDefinedException.c:26:     if (a <= 0)
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jg	.L8	 #,
- # TestCode\userDefinedException.c:29:         if (a < 0)
+ # TestCode\userDefinedException.c:28:         if (a < 0)
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jns	.L9	 #,
- # TestCode\userDefinedException.c:31:             userDefinedException();
+ # TestCode\userDefinedException.c:30:             userDefinedException();
 	call	userDefinedException	 #
 .L9:
- # TestCode\userDefinedException.c:33:         return 0;
+ # TestCode\userDefinedException.c:32:         return 0;
 	mov	eax, 0	 # _5,
 	jmp	.L10	 #
 .L8:
- # TestCode\userDefinedException.c:35:     else if (a == 1)
+ # TestCode\userDefinedException.c:34:     else if (a == 1)
 	cmp	DWORD PTR 32[rbp], 1	 # a,
 	jne	.L11	 #,
- # TestCode\userDefinedException.c:37:         return 1;
+ # TestCode\userDefinedException.c:36:         return 1;
 	mov	eax, 1	 # _5,
 	jmp	.L10	 #
 .L11:
- # TestCode\userDefinedException.c:41:         return fib2(a - 1) + fib2(a - 2);
+ # TestCode\userDefinedException.c:40:         return fib2(a - 1) + fib2(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp88, a
 	sub	eax, 1	 # _1,
 	mov	ecx, eax	 #, _1
 	call	fib2	 #
 	mov	ebx, eax	 # _2,
- # TestCode\userDefinedException.c:41:         return fib2(a - 1) + fib2(a - 2);
+ # TestCode\userDefinedException.c:40:         return fib2(a - 1) + fib2(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp89, a
 	sub	eax, 2	 # _3,
 	mov	ecx, eax	 #, _3
 	call	fib2	 #
- # TestCode\userDefinedException.c:41:         return fib2(a - 1) + fib2(a - 2);
+ # TestCode\userDefinedException.c:40:         return fib2(a - 1) + fib2(a - 2);
 	add	eax, ebx	 # _5, _2
 .L10:
- # TestCode\userDefinedException.c:43: }
+ # TestCode\userDefinedException.c:42: }
 	add	rsp, 40	 #,
 	pop	rbx	 #
 	pop	rbp	 #
@@ -144,11 +144,11 @@ fib3:
 	.seh_setframe	rbp, 32
 	.seh_endprologue
 	mov	DWORD PTR 32[rbp], ecx	 # a, a
- # TestCode\userDefinedException.c:47:     assert(a >= 0);
+ # TestCode\userDefinedException.c:46:     assert(a >= 0);
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jns	.L15	 #,
- # TestCode\userDefinedException.c:47:     assert(a >= 0);
-	mov	r8d, 47	 #,
+ # TestCode\userDefinedException.c:46:     assert(a >= 0);
+	mov	r8d, 46	 #,
 	lea	rax, .LC0[rip]	 # tmp90,
 	mov	rdx, rax	 #, tmp90
 	lea	rax, .LC1[rip]	 # tmp91,
@@ -156,41 +156,41 @@ fib3:
 	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp92,
 	call	rax	 # tmp92
 .L15:
- # TestCode\userDefinedException.c:48:     if (a <= 0)
+ # TestCode\userDefinedException.c:47:     if (a <= 0)
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jg	.L16	 #,
- # TestCode\userDefinedException.c:50:         if (a < 0)
+ # TestCode\userDefinedException.c:49:         if (a < 0)
 	cmp	DWORD PTR 32[rbp], 0	 # a,
 	jns	.L17	 #,
- # TestCode\userDefinedException.c:52:             userDefinedException();
+ # TestCode\userDefinedException.c:51:             userDefinedException();
 	call	userDefinedException	 #
 .L17:
- # TestCode\userDefinedException.c:54:         return 0;
+ # TestCode\userDefinedException.c:53:         return 0;
 	mov	eax, 0	 # _5,
 	jmp	.L18	 #
 .L16:
- # TestCode\userDefinedException.c:56:     else if (a == 1)
+ # TestCode\userDefinedException.c:55:     else if (a == 1)
 	cmp	DWORD PTR 32[rbp], 1	 # a,
 	jne	.L19	 #,
- # TestCode\userDefinedException.c:58:         return 1;
+ # TestCode\userDefinedException.c:57:         return 1;
 	mov	eax, 1	 # _5,
 	jmp	.L18	 #
 .L19:
- # TestCode\userDefinedException.c:62:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp93, a
 	sub	eax, 1	 # _1,
 	mov	ecx, eax	 #, _1
 	call	fib3	 #
 	mov	ebx, eax	 # _2,
- # TestCode\userDefinedException.c:62:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
 	mov	eax, DWORD PTR 32[rbp]	 # tmp94, a
 	sub	eax, 2	 # _3,
 	mov	ecx, eax	 #, _3
 	call	fib3	 #
- # TestCode\userDefinedException.c:62:         return fib3(a - 1) + fib3(a - 2);
+ # TestCode\userDefinedException.c:61:         return fib3(a - 1) + fib3(a - 2);
 	add	eax, ebx	 # _5, _2
 .L18:
- # TestCode\userDefinedException.c:64: }
+ # TestCode\userDefinedException.c:63: }
 	add	rsp, 40	 #,
 	pop	rbx	 #
 	pop	rbp	 #

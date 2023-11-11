@@ -5,7 +5,6 @@ void userDefinedException()
     return;
 }
 
-
 int fib1(int a)
 {
     if (a <= 0)

@@ -352,7 +352,7 @@ class ConcolicExecutor:
                     if operand1 == "rax":
                         print(" Assertion failed!")
                         print(" Exiting!")
-                        return
+                        return 0, total_constraint
                     if not isinstance(operand2, Address):
                         raise Exception
                     print(f" {operand1}: {get_value(operand1)}")
@@ -476,6 +476,7 @@ class ConcolicExecutor:
             print(solver.assertions())
             index += 1
         
+        print("Not harmful input is found!")
         return True
 
 
@@ -493,4 +494,4 @@ if __name__ == "__main__":
     # executor.run("loop")
     # executor.run("sum")
 
-    executor.test("fib2", 1, 5)
+    executor.test("fib3", 1, 10)
