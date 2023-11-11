@@ -411,6 +411,17 @@ class ConcolicExecutor:
                     total_constraint = simplify(And(total_constraint, constraint))
                     print(f" constraint: {total_constraint}")
 
+                case OpType.JLE:
+                    print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 <= self.cmp_operand2
+                    if result:
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
+                        operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    print(f" constraint: {total_constraint}")
+
                 case OpType.JMP:
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
@@ -469,13 +480,13 @@ class ConcolicExecutor:
             result, constraint = self.run(label_name, para_list)
             solver.add(Not(constraint))
             if result == None:
-                print("Find an input that can cause error!")
+                print(f"Find an input that can cause error in {index + 1} loops")
                 print(para_list)
                 return False
             print("Current Constraint:")
             print(solver.assertions())
             index += 1
-        
+
         print("Not harmful input is found!")
         return True
 

@@ -85,7 +85,7 @@ cmp	DWORD PTR 32[rbp], 1
 jne	.L19
 mov	eax, 1
 jmp	.L18
-cmp	DWORD PTR 32[rbp], 10
+cmp	DWORD PTR 32[rbp], 100
 jle	.L20
 call	userDefinedException
 mov	eax, DWORD PTR 32[rbp]

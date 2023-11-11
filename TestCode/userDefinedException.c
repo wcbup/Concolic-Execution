@@ -58,7 +58,7 @@ int fib3(int a)
     }
     else
     {
-        if (a > 10)
+        if (a > 100)
         {
             userDefinedException();
         }

@@ -176,8 +176,8 @@ fib3:
 	mov	eax, 1	 # _5,
 	jmp	.L18	 #
 .L19:
- # TestCode\userDefinedException.c:61:         if (a > 10)
-	cmp	DWORD PTR 32[rbp], 10	 # a,
+ # TestCode\userDefinedException.c:61:         if (a > 100)
+	cmp	DWORD PTR 32[rbp], 100	 # a,
 	jle	.L20	 #,
  # TestCode\userDefinedException.c:63:             userDefinedException();
 	call	userDefinedException	 #
