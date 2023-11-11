@@ -1,6 +1,13 @@
 from __future__ import annotations
 from Parser import Parser, OpType, Address
 from typing import Dict, List
+from z3 import *
+
+
+class ConcolicVar:
+    def __init__(self, value: int, variable: None | ArithRef = None) -> None:
+        self.value = value
+        self.variable = variable
 
 
 class ConcolicExecutor:
@@ -200,17 +207,23 @@ class ConcolicExecutor:
 
                 case OpType.JG:
                     if self.cmp_operand1 > self.cmp_operand2:
-                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
                         operation_index -= 1
 
                 case OpType.JNE:
                     if self.cmp_operand1 != self.cmp_operand2:
-                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
                         operation_index -= 1
 
                 case OpType.JNS:
                     if self.cmp_operand1 >= self.cmp_operand2:
-                        operation_index = self.parser.label_dict[operation.operand_list[0]]
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
                         operation_index -= 1
 
                 case OpType.JMP:

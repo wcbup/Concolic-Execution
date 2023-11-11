@@ -1,3 +1,4 @@
-print(333 % 100)
-a = None
-print(isinstance(a, int | float | str))
+from z3 import *
+
+a = Int('x')
+n = a >= 3
