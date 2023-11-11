@@ -7,7 +7,7 @@ int sum(int a, int b, int c, int d, int e, int f, int g)
 int foo(int a)
 {
     int b, c;
-    b = 2;
+    b = 9;
     c = 3;
     c *= 7;
     b = b - 1;

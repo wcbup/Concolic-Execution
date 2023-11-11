@@ -1,13 +1,12 @@
 from z3 import *
 
-a = Int('a')
-b = Int('b')
-c = Int('c')
-print(a % b)
+x0 = Int("x0")
+result = Int("result")
 solver = Solver()
-solver.add(a == 3)
-solver.add(b == 2)
-solver.add(c == a / b)
-
-print(solver.check())
-print(solver.model())
+solver.add(x0 > -32768)
+solver.add(x0 == 12)
+solver.add(result == (x0/8)*77 + 8 + 16 + (x0/8)*77 + 8 + x0 + 8 + x0 + 8)
+if solver.check() == sat:
+    print(solver.model())
+else:
+    print(unsat)

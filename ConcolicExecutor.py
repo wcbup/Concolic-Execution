@@ -104,13 +104,13 @@ class ConcolicVar:
 
 
 class ConcolicExecutor:
-    def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
+    def __init__(self, parser: Parser) -> None:
         self.parser = parser
         self.register_dict: Dict[str, ConcolicVar | None] = {}
         self.memory_array: List[None | ConcolicVar] = [None] * 10_000
-        self.reset_state(parameter_list)
 
-    def reset_state(self, para_list: List[int]) -> None:
+    def run(self, label_name: str, para_list: List[int]) -> int | None:
+        # reset the state
         parameter_list: List[ConcolicVar] = []
         for i in range(len(para_list)):
             parameter_list.append(ConcolicVar(para_list[i], Int(f"x{i}")))
@@ -143,7 +143,6 @@ class ConcolicExecutor:
                     self.register_dict["rsp"] + 8 * (i + 1)
                 ] = parameter_list[i]
 
-    def run(self, label_name: str) -> int | None:
         def push(x: ConcolicVar | None) -> None:
             # push x on the stack
             self.register_dict["rsp"] = self.register_dict["rsp"] - ConcolicVar(8)
@@ -366,10 +365,10 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [10])
+    executor = ConcolicExecutor(parser)
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("foo")
+    executor.run("foo", [12])
     # executor.run("fib3")
     # executor.run("loop")
     # executor.run("sum")

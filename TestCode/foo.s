@@ -54,8 +54,8 @@ foo:
 	.seh_stackalloc	80
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
- # TestCode\foo.c:10:     b = 2;
-	mov	DWORD PTR -4[rbp], 2	 # b,
+ # TestCode\foo.c:10:     b = 9;
+	mov	DWORD PTR -4[rbp], 9	 # b,
  # TestCode\foo.c:11:     c = 3;
 	mov	DWORD PTR -8[rbp], 3	 # c,
  # TestCode\foo.c:12:     c *= 7;
