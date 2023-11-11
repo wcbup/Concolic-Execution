@@ -4,7 +4,7 @@
 
 int main()
 {
-    printf("%d\n", foo(12));
+    printf("%d\n", foo(32766));
     // printf("%d\n", sum(1, 2, 3, 4, 5, 6, 7));
     // printf("%d\n", fib(10));
     // printf("%d\n", loop(40));

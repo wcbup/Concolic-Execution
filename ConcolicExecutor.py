@@ -1,6 +1,6 @@
 from __future__ import annotations
 from Parser import Parser, OpType, Address
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from z3 import *
 
 
@@ -102,6 +102,29 @@ class ConcolicVar:
             else:
                 return ConcolicVar(result_value, self.variable * other.variable)
 
+    def __gt__(self, other: ConcolicVar) -> Tuple[bool, BoolRef]:
+        """
+        return (result: bool, constraint: BoolRef)
+        """
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+
+        result = self.value > other.value
+        if self.variable == None:
+            if other.variable == None:
+                constraint = True
+            else:
+                constraint = self.value > other.variable
+        else:
+            if other.variable == None:
+                constraint = self.variable > other.value
+            else:
+                constraint = self.variable > other.value
+        if not result and constraint is not True:
+            constraint = Not(constraint)
+
+        return result, constraint
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser) -> None:
@@ -109,7 +132,9 @@ class ConcolicExecutor:
         self.register_dict: Dict[str, ConcolicVar | None] = {}
         self.memory_array: List[None | ConcolicVar] = [None] * 10_000
 
-    def run(self, label_name: str, para_list: List[int]) -> int | None:
+    def run(self, label_name: str, para_list: List[int]) -> Tuple[None | int, BoolRef]:
+        total_constraint: BoolRef = True
+
         # reset the state
         parameter_list: List[ConcolicVar] = []
         for i in range(len(para_list)):
@@ -304,13 +329,18 @@ class ConcolicExecutor:
                     self.cmp_operand2 = get_value(operand2)
 
                 case OpType.JG:
-                    if self.cmp_operand1 > self.cmp_operand2:
+                    print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 > self.cmp_operand2
+                    if result:
                         operation_index = self.parser.label_dict[
                             operation.operand_list[0]
                         ]
                         operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    print(f" constraint: {total_constraint}")
 
                 case OpType.JNE:
+                    raise Exception
                     if self.cmp_operand1 != self.cmp_operand2:
                         operation_index = self.parser.label_dict[
                             operation.operand_list[0]
@@ -318,6 +348,7 @@ class ConcolicExecutor:
                         operation_index -= 1
 
                 case OpType.JNS:
+                    raise Exception
                     if self.cmp_operand1 >= self.cmp_operand2:
                         operation_index = self.parser.label_dict[
                             operation.operand_list[0]
@@ -325,6 +356,7 @@ class ConcolicExecutor:
                         operation_index -= 1
 
                 case OpType.JMP:
+                    raise Exception
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
                     operation_index -= 1
 
@@ -341,8 +373,9 @@ class ConcolicExecutor:
                     result_address: str | None = pop()
                     if result_address is None:
                         print(" Finishing!")
-                        print(f" result is {get_value('eax')}")
-                        return get_value("eax")
+                        print(f" Result is {get_value('eax')}")
+                        print(f" Constraint is {simplify(total_constraint)}")
+                        return get_value("eax"), simplify(total_constraint)
                     elif isinstance(result_address, int):
                         print(" Returning")
                         print(f" result is {get_value('eax')}")
@@ -368,7 +401,8 @@ if __name__ == "__main__":
     executor = ConcolicExecutor(parser)
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("foo", [12])
+    # executor.run("foo", [32766])
+    executor.run("fib", [1])
     # executor.run("fib3")
     # executor.run("loop")
     # executor.run("sum")
