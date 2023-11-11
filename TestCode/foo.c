@@ -12,7 +12,7 @@ int foo(int a)
     c *= 7;
     b = b - 1;
     c = a / b * 77;
-    c += sum(b, b, c, b, a, b, b);
+    // c += sum(b, b, c, b, a, b, b);
     return a + b + c;
 }
 

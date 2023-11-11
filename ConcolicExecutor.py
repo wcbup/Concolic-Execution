@@ -27,6 +27,21 @@ class ConcolicVar:
             else:
                 return ConcolicVar(result_value, self.variable - other.variable)
 
+    def __add__(self, other: ConcolicVar) -> ConcolicVar:
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+        result_value = self.value + other.value
+        if self.variable == None:
+            if other.variable == None:
+                return ConcolicVar(result_value)
+            else:
+                return ConcolicVar(result_value, self.value + other.variable)
+        else:
+            if other.variable == None:
+                return ConcolicVar(result_value, self.variable + other.value)
+            else:
+                return ConcolicVar(result_value, self.variable + other.variable)
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
@@ -80,13 +95,13 @@ class ConcolicExecutor:
             self.register_dict["rsp"] += 8
             return value
 
-        def get_value(x: int | str | Address) -> int | None:
+        def get_value(x: int | str | Address) -> ConcolicVar | None:
             if isinstance(x, int):
                 return ConcolicVar(x)
             elif isinstance(x, str):
                 return self.register_dict[x]
             elif isinstance(x, Address):
-                return self.memory_array[get_value(x.operand) + x.offset]
+                return self.memory_array[get_value(x.operand).value + x.offset]
             else:
                 raise Exception(x)
 
@@ -98,7 +113,7 @@ class ConcolicExecutor:
                 self.register_dict[destination] = value
             elif isinstance(destination, Address):
                 self.memory_array[
-                    get_value(destination.operand) + destination.offset
+                    get_value(destination.operand).value + destination.offset
                 ] = value
             else:
                 raise Exception(destination)
@@ -208,7 +223,7 @@ class ConcolicExecutor:
                         raise Exception
                     print(f" {operand1}: {get_value(operand1)}")
                     print(f" {operand2}: {get_value(operand2.operand)}")
-                    result = get_value(operand2.operand) + operand2.offset
+                    result = get_value(operand2.operand) + ConcolicVar(operand2.offset)
                     assign_value(operation.operand_list[0], result)
                     print(f" {operand1}: {get_value(operand1)}")
 
@@ -287,13 +302,14 @@ class ConcolicExecutor:
 
 # test code
 if __name__ == "__main__":
-    # parser = Parser("TestCode\\foo.c")
+    parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    parser = Parser("TestCode\\userDefinedException.c")
+    # parser = Parser("TestCode\\userDefinedException.c")
 
     executor = ConcolicExecutor(parser, [10])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
-    executor.run("fib3")
+    executor.run("foo")
+    # executor.run("fib3")
     # executor.run("loop")
     # executor.run("sum")
