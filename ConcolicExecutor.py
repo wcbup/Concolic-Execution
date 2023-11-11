@@ -57,6 +57,21 @@ class ConcolicVar:
             else:
                 return ConcolicVar(result_value, self.variable * 2**other.variable)
 
+    def __truediv__(self, other: ConcolicVar) -> ConcolicVar:
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+        result_value = int(self.value / other.value)
+        if self.variable == None:
+            if other.variable == None:
+                return ConcolicVar(result_value)
+            else:
+                return ConcolicVar(result_value, self.value / other.variable)
+        else:
+            if other.variable == None:
+                return ConcolicVar(result_value, self.variable / other.value)
+            else:
+                return ConcolicVar(result_value, self.variable / other.variable)
+
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
@@ -68,7 +83,7 @@ class ConcolicExecutor:
     def reset_state(self, para_list: List[int]) -> None:
         parameter_list: List[ConcolicVar] = []
         for i in range(len(para_list)):
-            parameter_list.append(ConcolicVar(para_list[i], f"x{i}"))
+            parameter_list.append(ConcolicVar(para_list[i], Int(f"x{i}")))
 
         # init return address
         self.register_dict["ret"] = None
@@ -179,7 +194,7 @@ class ConcolicExecutor:
                     print(f" {operand}: {get_value(operand)}")
                     print(f" eax: {get_value('eax')}")
                     print(f" edx: {get_value('edx')}")
-                    quotient = int(get_value("eax") / get_value(operand))
+                    quotient = get_value("eax") / get_value(operand)
                     remainder = get_value("eax") % get_value(operand)
                     assign_value("eax", quotient)
                     assign_value("edx", remainder)

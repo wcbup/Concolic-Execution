@@ -1,7 +1,13 @@
 from z3 import *
 
-a = Int('x')
-n = a >= 3
-x = 2 ** a
+a = Int('a')
+b = Int('b')
+c = Int('c')
+print(a % b)
+solver = Solver()
+solver.add(a == 3)
+solver.add(b == 2)
+solver.add(c == a / b)
 
-print(x)
+print(solver.check())
+print(solver.model())
