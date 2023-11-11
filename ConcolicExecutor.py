@@ -8,19 +8,43 @@ class ConcolicVar:
     def __init__(self, value: int, variable: None | ArithRef = None) -> None:
         self.value = value
         self.variable = variable
+    
+    def __str__(self) -> str:
+        return f"({self.value}, {self.variable})"
+
+    def __sub__(self, other: ConcolicVar) -> ConcolicVar:
+        if not isinstance(other, ConcolicVar):
+            raise Exception(other)
+        result_value = self.value - other.value
+        if self.variable == None:
+            if other.variable == None:
+                return ConcolicVar(result_value)
+            else:
+                return ConcolicVar(result_value, self.value - other.variable)
+        else:
+            if other.variable == None:
+                return ConcolicVar(result_value, self.variable - other.value)
+            else:
+                return ConcolicVar(result_value, self.variable - other.variable)
 
 
 class ConcolicExecutor:
     def __init__(self, parser: Parser, parameter_list: List[int]) -> None:
         self.parser = parser
-        self.register_dict: Dict[str, int | None] = {}
-        self.memory_array: List[None | int] = [None] * 10_000
+        self.register_dict: Dict[str, ConcolicVar | None] = {}
+        self.memory_array: List[None | ConcolicVar] = [None] * 10_000
+        self.reset_state(parameter_list)
+
+    def reset_state(self, para_list: List[int]) -> None:
+        parameter_list: List[ConcolicVar] = []
+        for i in range(len(para_list)):
+            parameter_list.append(ConcolicVar(para_list[i], f"x{i}"))
 
         # init return address
         self.register_dict["ret"] = None
         # init register
-        self.register_dict["rsp"] = 9000
-        self.register_dict["rbp"] = 9000
+        self.register_dict["rsp"] = ConcolicVar(9000)
+        self.register_dict["rbp"] = ConcolicVar(9000)
         self.register_dict["eax"] = None
         self.register_dict["ebx"] = None
         self.register_dict["ecx"] = None
@@ -45,10 +69,10 @@ class ConcolicExecutor:
                 ] = parameter_list[i]
 
     def run(self, label_name: str) -> int | None:
-        def push(x: int | None) -> None:
+        def push(x: ConcolicVar | None) -> None:
             # push x on the stack
-            self.register_dict["rsp"] -= 8
-            self.memory_array[self.register_dict["rsp"]] = x
+            self.register_dict["rsp"] = self.register_dict["rsp"] - ConcolicVar(8)
+            self.memory_array[self.register_dict["rsp"].value] = x
 
         def pop() -> int | None | str:
             # pop the stack
@@ -267,7 +291,7 @@ if __name__ == "__main__":
     # parser = Parser("TestCode\\div.c")
     parser = Parser("TestCode\\userDefinedException.c")
 
-    executor = ConcolicExecutor(parser, [-1])
+    executor = ConcolicExecutor(parser, [10])
     # executor = ConcolicExecutor(parser, [1, 2, 3, 4, 5, 6, 7])
 
     executor.run("fib3")
