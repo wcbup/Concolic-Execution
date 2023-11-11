@@ -119,7 +119,7 @@ class ConcolicVar:
             if other.variable == None:
                 constraint = self.variable > other.value
             else:
-                constraint = self.variable > other.value
+                constraint = self.variable > other.variable
         if not result and constraint is not True:
             constraint = Not(constraint)
 
@@ -340,12 +340,15 @@ class ConcolicExecutor:
                     print(f" constraint: {total_constraint}")
 
                 case OpType.JNE:
-                    raise Exception
-                    if self.cmp_operand1 != self.cmp_operand2:
+                    print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 != self.cmp_operand2
+                    if result:
                         operation_index = self.parser.label_dict[
                             operation.operand_list[0]
                         ]
                         operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    print(f" constraint: {total_constraint}")
 
                 case OpType.JNS:
                     raise Exception
