@@ -50,6 +50,23 @@ class Address:
         return f"offset: {self.offset}, operand: {self.operand}"
 
 
+class ArrayAddress:
+    def __init__(self, raw_str: str) -> None:
+        result = re.search(r"[\-]{0,1}[\d]*\[.+\]", raw_str)
+        address_str = result.group(0)
+        offset_result = re.search(r"-{0,1}\d+", address_str)
+        if offset_result != None:
+            self.offset = int(offset_result.group(0))
+        else:
+            self.offset = 0
+        operand_result = re.search(r"\[(\w+)\+(\w+)\*4\]", address_str)
+        self.operand1 = operand_result.group(1)
+        self.operand2 = operand_result.group(2)
+
+    def __str__(self) -> str:
+        return f"offset: {self.offset}, operand: {self.operand1, self.operand2}"
+
+
 class Operation:
     def __init__(self, raw_str: str) -> None:
         self.operand_list: List[str | int | Address] = []
@@ -109,7 +126,10 @@ class Operation:
             for i in range(2, 4):
                 operand_str = result.group(i)
                 if "[" in operand_str:
-                    self.operand_list.append(Address(operand_str))
+                    if "*" not in operand_str:
+                        self.operand_list.append(Address(operand_str))
+                    else:
+                        self.operand_list.append(ArrayAddress(operand_str))
                 elif operand_str.lstrip("-").isdigit():
                     self.operand_list.append(int(operand_str))
                 else:
@@ -271,7 +291,9 @@ class Code:
                         print(
                             " ",
                             [
-                                str(i) if isinstance(i, Address) else i
+                                str(i)
+                                if isinstance(i, Address) or isinstance(i, ArrayAddress)
+                                else i
                                 for i in self.operation.operand_list
                             ],
                         )
@@ -413,6 +435,6 @@ class Parser:
 # test code
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
-    parser = Parser("TestCode\\div.c")
+    # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
-    # parser = Parser("TestCode\\array.c")
+    parser = Parser("TestCode\\array.c")
