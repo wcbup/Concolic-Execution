@@ -6,7 +6,6 @@ int div0(int a)
     return a / b;
 }
 
-
 int div_a_b1(int a, int b)
 {
     return a / b;
@@ -17,7 +16,6 @@ int div_a_b2(int a, int b)
     assert(b != 0);
     return a / b;
 }
-
 
 int div_a_b3(int a, int b)
 {
@@ -46,7 +44,7 @@ int div_a_b4(int a, int b)
 int div_a_b5(int a, int b)
 {
     int c = 9;
-    a = c * b / (a + 3 - c);
+    a = c * b / (a + 3 - c * b);
     b = a * b + c;
     if (a > b)
     {

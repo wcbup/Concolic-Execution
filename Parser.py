@@ -122,6 +122,7 @@ class Operation:
 
         elif "mov" in raw_str:
             self.type = OpType.MOV
+            raw_str = raw_str.replace("rax", "eax")
             result = re.search(r"(\bmov\b)\s+(\b.+),\s+(\b.+)", raw_str)
             for i in range(2, 4):
                 operand_str = result.group(i)

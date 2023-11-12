@@ -1,5 +1,5 @@
 from __future__ import annotations
-from Parser import Parser, OpType, Address
+from Parser import Parser, OpType, Address, ArrayAddress
 from typing import Dict, List, Tuple
 from z3 import *
 
@@ -229,13 +229,19 @@ class ConcolicExecutor:
             self.register_dict["rsp"] = self.register_dict["rsp"] + ConcolicVar(8)
             return value
 
-        def get_value(x: int | str | Address) -> ConcolicVar | None:
+        def get_value(x: int | str | Address | ArrayRef) -> ConcolicVar | None:
             if isinstance(x, int):
                 return ConcolicVar(x)
             elif isinstance(x, str):
                 return self.register_dict[x]
             elif isinstance(x, Address):
                 return self.memory_array[get_value(x.operand).value + x.offset]
+            elif isinstance(x, ArrayAddress):
+                return self.memory_array[
+                    get_value(x.operand1).value
+                    + 4 * get_value(x.operand2).value
+                    + x.offset
+                ]
             else:
                 raise Exception(x)
 
@@ -498,7 +504,7 @@ class ConcolicExecutor:
         index = 0
         while index < max_loop and solver.check() == sat:
             model = solver.model()
-            # para_list: List[int] = [model[i].as_long() for i in model.decls()]
+            para_list: List[int] = [model[i].as_long() for i in model.decls()]
             para_list: List[int] = []
             for i in model.decls():
                 value = model[i]
@@ -527,8 +533,9 @@ class ConcolicExecutor:
 # test code
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
-    parser = Parser("TestCode\\div.c")
+    # parser = Parser("TestCode\\div.c")
     # parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\array.c")
 
     executor = ConcolicExecutor(parser)
 
@@ -540,6 +547,7 @@ if __name__ == "__main__":
     # executor.run("div0", [1])
     # executor.run("div_a_b1", [1, 2])
     # executor.run("div_a_b5", [1, 2])
+    executor.run("array1", [2])
 
     # executor.test("fib3", 1, 10)
     # executor.test("div0", 1, 10)
@@ -547,4 +555,4 @@ if __name__ == "__main__":
     # executor.test("div_a_b2", 2, 10)
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
-    executor.test("div_a_b5", 2, 5)
+    # executor.test("div_a_b5", 2, 5)

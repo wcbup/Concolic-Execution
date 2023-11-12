@@ -40,11 +40,11 @@ div_a_b1:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:12:     return a / b;
+ # TestCode\div.c:11:     return a / b;
 	mov	eax, DWORD PTR 16[rbp]	 # tmp86, a
 	cdq
 	idiv	DWORD PTR 24[rbp]	 # b
- # TestCode\div.c:13: }
+ # TestCode\div.c:12: }
 	pop	rbp	 #
 	ret	
 	.seh_endproc
@@ -67,11 +67,11 @@ div_a_b2:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:17:     assert(b != 0);
+ # TestCode\div.c:16:     assert(b != 0);
 	cmp	DWORD PTR 24[rbp], 0	 # b,
 	jne	.L8	 #,
- # TestCode\div.c:17:     assert(b != 0);
-	mov	r8d, 17	 #,
+ # TestCode\div.c:16:     assert(b != 0);
+	mov	r8d, 16	 #,
 	lea	rax, .LC0[rip]	 # tmp86,
 	mov	rdx, rax	 #, tmp86
 	lea	rax, .LC1[rip]	 # tmp87,
@@ -79,11 +79,11 @@ div_a_b2:
 	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp88,
 	call	rax	 # tmp88
 .L8:
- # TestCode\div.c:18:     return a / b;
+ # TestCode\div.c:17:     return a / b;
 	mov	eax, DWORD PTR 16[rbp]	 # tmp91, a
 	cdq
 	idiv	DWORD PTR 24[rbp]	 # b
- # TestCode\div.c:19: }
+ # TestCode\div.c:18: }
 	add	rsp, 32	 #,
 	pop	rbp	 #
 	ret	
@@ -101,29 +101,29 @@ div_a_b3:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:24:     int c = 9;
+ # TestCode\div.c:22:     int c = 9;
 	mov	DWORD PTR -4[rbp], 9	 # c,
- # TestCode\div.c:25:     c = a / c;
+ # TestCode\div.c:23:     c = a / c;
 	mov	eax, DWORD PTR 16[rbp]	 # tmp87, a
 	cdq
 	idiv	DWORD PTR -4[rbp]	 # c
 	mov	DWORD PTR -4[rbp], eax	 # c, tmp85
- # TestCode\div.c:26:     if (c > b)
+ # TestCode\div.c:24:     if (c > b)
 	mov	eax, DWORD PTR -4[rbp]	 # tmp88, c
 	cmp	eax, DWORD PTR 24[rbp]	 # tmp88, b
 	jle	.L11	 #,
- # TestCode\div.c:28:         return c / b;
+ # TestCode\div.c:26:         return c / b;
 	mov	eax, DWORD PTR -4[rbp]	 # tmp91, c
 	cdq
 	idiv	DWORD PTR 24[rbp]	 # b
 	jmp	.L12	 #
 .L11:
- # TestCode\div.c:32:         return a / b;
+ # TestCode\div.c:30:         return a / b;
 	mov	eax, DWORD PTR 16[rbp]	 # tmp94, a
 	cdq
 	idiv	DWORD PTR 24[rbp]	 # b
 .L12:
- # TestCode\div.c:34: }
+ # TestCode\div.c:32: }
 	add	rsp, 16	 #,
 	pop	rbp	 #
 	ret	
@@ -141,24 +141,24 @@ div_a_b4:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:38:     int c = 9;
+ # TestCode\div.c:36:     int c = 9;
 	mov	DWORD PTR -4[rbp], 9	 # c,
- # TestCode\div.c:39:     while (a > b)
+ # TestCode\div.c:37:     while (a > b)
 	jmp	.L14	 #
 .L15:
- # TestCode\div.c:41:         a = b / c;
+ # TestCode\div.c:39:         a = b / c;
 	mov	eax, DWORD PTR 24[rbp]	 # tmp87, b
 	cdq
 	idiv	DWORD PTR -4[rbp]	 # c
 	mov	DWORD PTR 16[rbp], eax	 # a, tmp85
 .L14:
- # TestCode\div.c:39:     while (a > b)
+ # TestCode\div.c:37:     while (a > b)
 	mov	eax, DWORD PTR 16[rbp]	 # tmp88, a
 	cmp	eax, DWORD PTR 24[rbp]	 # tmp88, b
 	jg	.L15	 #,
- # TestCode\div.c:43:     return a;
+ # TestCode\div.c:41:     return a;
 	mov	eax, DWORD PTR 16[rbp]	 # _5, a
- # TestCode\div.c:44: }
+ # TestCode\div.c:42: }
 	add	rsp, 16	 #,
 	pop	rbp	 #
 	ret	
@@ -176,47 +176,49 @@ div_a_b5:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:48:     int c = 9;
+ # TestCode\div.c:46:     int c = 9;
 	mov	DWORD PTR -4[rbp], 9	 # c,
- # TestCode\div.c:49:     a = c * b / (a + 3 - c);
-	mov	eax, DWORD PTR -4[rbp]	 # tmp89, c
+ # TestCode\div.c:47:     a = c * b / (a + 3 - c * b);
+	mov	eax, DWORD PTR -4[rbp]	 # tmp90, c
 	imul	eax, DWORD PTR 24[rbp]	 # _1, b
- # TestCode\div.c:49:     a = c * b / (a + 3 - c);
-	mov	edx, DWORD PTR 16[rbp]	 # tmp90, a
-	add	edx, 3	 # _2,
- # TestCode\div.c:49:     a = c * b / (a + 3 - c);
-	mov	ecx, edx	 # _2, _2
-	sub	ecx, DWORD PTR -4[rbp]	 # _2, c
- # TestCode\div.c:49:     a = c * b / (a + 3 - c);
+ # TestCode\div.c:47:     a = c * b / (a + 3 - c * b);
+	mov	edx, DWORD PTR 16[rbp]	 # tmp91, a
+	lea	ecx, 3[rdx]	 # _2,
+ # TestCode\div.c:47:     a = c * b / (a + 3 - c * b);
+	mov	edx, DWORD PTR -4[rbp]	 # tmp92, c
+	imul	edx, DWORD PTR 24[rbp]	 # _3, b
+ # TestCode\div.c:47:     a = c * b / (a + 3 - c * b);
+	sub	ecx, edx	 # _4, _3
+ # TestCode\div.c:47:     a = c * b / (a + 3 - c * b);
 	cdq
-	idiv	ecx	 # _3
-	mov	DWORD PTR 16[rbp], eax	 # a, tmp91
- # TestCode\div.c:50:     b = a * b + c;
-	mov	eax, DWORD PTR 16[rbp]	 # tmp93, a
-	imul	eax, DWORD PTR 24[rbp]	 # tmp93, b
-	mov	edx, eax	 # _4, tmp93
- # TestCode\div.c:50:     b = a * b + c;
-	mov	eax, DWORD PTR -4[rbp]	 # tmp97, c
-	add	eax, edx	 # tmp96, _4
-	mov	DWORD PTR 24[rbp], eax	 # b, tmp96
- # TestCode\div.c:51:     if (a > b)
-	mov	eax, DWORD PTR 16[rbp]	 # tmp98, a
-	cmp	eax, DWORD PTR 24[rbp]	 # tmp98, b
+	idiv	ecx	 # _4
+	mov	DWORD PTR 16[rbp], eax	 # a, tmp93
+ # TestCode\div.c:48:     b = a * b + c;
+	mov	eax, DWORD PTR 16[rbp]	 # tmp95, a
+	imul	eax, DWORD PTR 24[rbp]	 # tmp95, b
+	mov	edx, eax	 # _5, tmp95
+ # TestCode\div.c:48:     b = a * b + c;
+	mov	eax, DWORD PTR -4[rbp]	 # tmp99, c
+	add	eax, edx	 # tmp98, _5
+	mov	DWORD PTR 24[rbp], eax	 # b, tmp98
+ # TestCode\div.c:49:     if (a > b)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp100, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp100, b
 	jle	.L18	 #,
- # TestCode\div.c:53:         return b + c / a;
-	mov	eax, DWORD PTR -4[rbp]	 # tmp101, c
+ # TestCode\div.c:51:         return b + c / a;
+	mov	eax, DWORD PTR -4[rbp]	 # tmp103, c
 	cdq
 	idiv	DWORD PTR 16[rbp]	 # a
-	mov	edx, eax	 # _5, tmp99
- # TestCode\div.c:53:         return b + c / a;
-	mov	eax, DWORD PTR 24[rbp]	 # tmp102, b
-	add	eax, edx	 # _6, _5
+	mov	edx, eax	 # _6, tmp101
+ # TestCode\div.c:51:         return b + c / a;
+	mov	eax, DWORD PTR 24[rbp]	 # tmp104, b
+	add	eax, edx	 # _7, _6
 	jmp	.L19	 #
 .L18:
- # TestCode\div.c:55:     return a;
-	mov	eax, DWORD PTR 16[rbp]	 # _6, a
+ # TestCode\div.c:53:     return a;
+	mov	eax, DWORD PTR 16[rbp]	 # _7, a
 .L19:
- # TestCode\div.c:56: }
+ # TestCode\div.c:54: }
 	add	rsp, 16	 #,
 	pop	rbp	 #
 	ret	
