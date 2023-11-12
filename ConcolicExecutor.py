@@ -294,6 +294,36 @@ class ConcolicExecutor:
                 case OpType.MOV:
                     destination = operation.operand_list[0]
                     source = operation.operand_list[1]
+                    
+                    # check array index bound
+                    if isinstance(source, ArrayAddress):
+                        index: ConcolicVar = (
+                            get_value(source.operand1)
+                            + ConcolicVar(4) * get_value(source.operand2)
+                            + ConcolicVar(source.offset)
+                        )
+                        low_bound = get_value("rsp")
+                        up_bound = get_value("rbp")
+                        # print(low_bound, up_bound, index)
+                        if (
+                            index.value < low_bound.value
+                            or index.value > up_bound.value
+                        ):
+                            print("Index out of bound!")
+                            print(f"low bound: {low_bound}")
+                            print(f"up bound: {up_bound}")
+                            print(f"index: {index}")
+
+                            return None, total_constraint
+                        else:
+                            if index.variable != None:
+                                total_constraint = simplify(
+                                    And(
+                                        total_constraint,
+                                        index.variable >= low_bound.value,
+                                        index.variable <= up_bound.value,
+                                    )
+                                )
                     print(f" {destination}: {get_value(destination)}")
                     print(f" {source}: {get_value(source)}")
                     assign_value(destination, get_value(source))
@@ -377,7 +407,7 @@ class ConcolicExecutor:
                 case OpType.LEA:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    if operand1 == "rax":
+                    if operand2.operand == "rip":
                         print(" Assertion failed!")
                         print(" Exiting!")
                         return 0, total_constraint
@@ -559,7 +589,7 @@ if __name__ == "__main__":
     # executor.run("div_a_b1", [1, 2])
     # executor.run("div_a_b5", [1, 2])
     # executor.run("array1", [2])
-    executor.run("array2", [0])
+    # executor.run("array2", [2])
     # executor.run("array3", [4])
 
     # executor.test("fib3", 1, 10)
@@ -569,3 +599,4 @@ if __name__ == "__main__":
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
     # executor.test("div_a_b5", 2, 5)
+    executor.test("array4", 1, 5)
