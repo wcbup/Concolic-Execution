@@ -498,7 +498,12 @@ class ConcolicExecutor:
         index = 0
         while index < max_loop and solver.check() == sat:
             model = solver.model()
-            para_list: List[int] = [model[i].as_long() for i in model.decls()]
+            # para_list: List[int] = [model[i].as_long() for i in model.decls()]
+            para_list: List[int] = []
+            for i in model.decls():
+                value = model[i]
+                if isinstance(value, IntNumRef):
+                    para_list.append(value.as_long())
             print("---input---")
             print(para_list)
             result, constraint = self.run(label_name, para_list)
@@ -534,7 +539,7 @@ if __name__ == "__main__":
     # executor.run("sum")
     # executor.run("div0", [1])
     # executor.run("div_a_b1", [1, 2])
-    executor.run("div_a_b5", [1, 2])
+    # executor.run("div_a_b5", [1, 2])
 
     # executor.test("fib3", 1, 10)
     # executor.test("div0", 1, 10)
@@ -542,4 +547,4 @@ if __name__ == "__main__":
     # executor.test("div_a_b2", 2, 10)
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
-    # executor.test("div_a_b5", 2, 5)
+    executor.test("div_a_b5", 2, 5)

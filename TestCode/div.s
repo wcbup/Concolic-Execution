@@ -178,37 +178,43 @@ div_a_b5:
 	mov	DWORD PTR 24[rbp], edx	 # b, b
  # TestCode\div.c:48:     int c = 9;
 	mov	DWORD PTR -4[rbp], 9	 # c,
- # TestCode\div.c:49:     a = c * b / a;
-	mov	eax, DWORD PTR -4[rbp]	 # tmp87, c
+ # TestCode\div.c:49:     a = c * b / (a + 3 - c);
+	mov	eax, DWORD PTR -4[rbp]	 # tmp89, c
 	imul	eax, DWORD PTR 24[rbp]	 # _1, b
- # TestCode\div.c:49:     a = c * b / a;
+ # TestCode\div.c:49:     a = c * b / (a + 3 - c);
+	mov	edx, DWORD PTR 16[rbp]	 # tmp90, a
+	add	edx, 3	 # _2,
+ # TestCode\div.c:49:     a = c * b / (a + 3 - c);
+	mov	ecx, edx	 # _2, _2
+	sub	ecx, DWORD PTR -4[rbp]	 # _2, c
+ # TestCode\div.c:49:     a = c * b / (a + 3 - c);
 	cdq
-	idiv	DWORD PTR 16[rbp]	 # a
-	mov	DWORD PTR 16[rbp], eax	 # a, tmp89
+	idiv	ecx	 # _3
+	mov	DWORD PTR 16[rbp], eax	 # a, tmp91
  # TestCode\div.c:50:     b = a * b + c;
-	mov	eax, DWORD PTR 16[rbp]	 # tmp91, a
-	imul	eax, DWORD PTR 24[rbp]	 # tmp91, b
-	mov	edx, eax	 # _2, tmp91
+	mov	eax, DWORD PTR 16[rbp]	 # tmp93, a
+	imul	eax, DWORD PTR 24[rbp]	 # tmp93, b
+	mov	edx, eax	 # _4, tmp93
  # TestCode\div.c:50:     b = a * b + c;
-	mov	eax, DWORD PTR -4[rbp]	 # tmp95, c
-	add	eax, edx	 # tmp94, _2
-	mov	DWORD PTR 24[rbp], eax	 # b, tmp94
+	mov	eax, DWORD PTR -4[rbp]	 # tmp97, c
+	add	eax, edx	 # tmp96, _4
+	mov	DWORD PTR 24[rbp], eax	 # b, tmp96
  # TestCode\div.c:51:     if (a > b)
-	mov	eax, DWORD PTR 16[rbp]	 # tmp96, a
-	cmp	eax, DWORD PTR 24[rbp]	 # tmp96, b
+	mov	eax, DWORD PTR 16[rbp]	 # tmp98, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp98, b
 	jle	.L18	 #,
  # TestCode\div.c:53:         return b + c / a;
-	mov	eax, DWORD PTR -4[rbp]	 # tmp99, c
+	mov	eax, DWORD PTR -4[rbp]	 # tmp101, c
 	cdq
 	idiv	DWORD PTR 16[rbp]	 # a
-	mov	edx, eax	 # _3, tmp97
+	mov	edx, eax	 # _5, tmp99
  # TestCode\div.c:53:         return b + c / a;
-	mov	eax, DWORD PTR 24[rbp]	 # tmp100, b
-	add	eax, edx	 # _4, _3
+	mov	eax, DWORD PTR 24[rbp]	 # tmp102, b
+	add	eax, edx	 # _6, _5
 	jmp	.L19	 #
 .L18:
  # TestCode\div.c:55:     return a;
-	mov	eax, DWORD PTR 16[rbp]	 # _4, a
+	mov	eax, DWORD PTR 16[rbp]	 # _6, a
 .L19:
  # TestCode\div.c:56: }
 	add	rsp, 16	 #,

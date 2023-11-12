@@ -87,8 +87,12 @@ mov	DWORD PTR 24[rbp], edx
 mov	DWORD PTR -4[rbp], 9
 mov	eax, DWORD PTR -4[rbp]
 imul	eax, DWORD PTR 24[rbp]
+mov	edx, DWORD PTR 16[rbp]
+add	edx, 3
+mov	ecx, edx
+sub	ecx, DWORD PTR -4[rbp]
 cdq
-idiv	DWORD PTR 16[rbp]
+idiv	ecx
 mov	DWORD PTR 16[rbp], eax
 mov	eax, DWORD PTR 16[rbp]
 imul	eax, DWORD PTR 24[rbp]
