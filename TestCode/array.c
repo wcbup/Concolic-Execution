@@ -9,7 +9,7 @@ int array2(int i)
 {
     int a[] = {0, 1, 2};
     int b = 3, c = 4;
-    if (i <= 5 && i >= 0)
+    if (i <= 2 && i >= 0)
     {
         return a[i] + (a[i + 1] + 1) * a[i + 2];
     }

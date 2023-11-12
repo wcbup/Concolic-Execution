@@ -584,8 +584,8 @@ class ConcolicExecutor:
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    parser = Parser("TestCode\\userDefinedException.c")
-    # parser = Parser("TestCode\\array.c")
+    # parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\array.c")
 
     executor = ConcolicExecutor(parser)
 
@@ -601,13 +601,14 @@ if __name__ == "__main__":
     # executor.run("array2", [2])
     # executor.run("array3", [4])
 
-    # executor.test("fib3", 1, 10)
     # executor.test("div0", 1, 10)
     # executor.test("div_a_b1", 2, 10)
     # executor.test("div_a_b2", 2, 10)
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
     # executor.test("div_a_b5", 2, 5)
-    # executor.test("array6", 2, 5)
-    executor.test("user1", 3, 16)
-    # executor.test("user2", 3, 5)
+    # executor.test("fib1", 1, 5)
+    # executor.test("user1", 3, 16)
+    # executor.test("array1", 1, 5)
+    # executor.test("array4", 1, 5)
+    executor.test("array6", 2, 5)

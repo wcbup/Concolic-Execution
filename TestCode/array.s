@@ -51,10 +51,10 @@ array2:
 	mov	DWORD PTR -4[rbp], 3	 # b,
  # TestCode\array.c:11:     int b = 3, c = 4;
 	mov	DWORD PTR -8[rbp], 4	 # c,
- # TestCode\array.c:12:     if (i <= 5 && i >= 0)
-	cmp	DWORD PTR 16[rbp], 5	 # i,
+ # TestCode\array.c:12:     if (i <= 2 && i >= 0)
+	cmp	DWORD PTR 16[rbp], 2	 # i,
 	jg	.L4	 #,
- # TestCode\array.c:12:     if (i <= 5 && i >= 0)
+ # TestCode\array.c:12:     if (i <= 2 && i >= 0)
 	cmp	DWORD PTR 16[rbp], 0	 # i,
 	js	.L4	 #,
  # TestCode\array.c:14:         return a[i] + (a[i + 1] + 1) * a[i + 2];
