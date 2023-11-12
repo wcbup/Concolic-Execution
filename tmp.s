@@ -144,11 +144,11 @@ mov	DWORD PTR 24[rbp], edx
 mov	DWORD PTR 32[rbp], r8d
 mov	eax, DWORD PTR 16[rbp]
 cmp	eax, DWORD PTR 24[rbp]
-jg	.L32
+jl	.L32
 mov	r8d, 81
 lea	rax, .LC0[rip]
 mov	rdx, rax
-lea	rax, .LC2[rip]
+lea	rax, .LC4[rip]
 mov	rcx, rax
 mov	rax, QWORD PTR __imp__assert[rip]
 call	rax
@@ -157,7 +157,7 @@ jns	.L35
 mov	r8d, 82
 lea	rax, .LC0[rip]
 mov	rdx, rax
-lea	rax, .LC4[rip]
+lea	rax, .LC5[rip]
 mov	rcx, rax
 mov	rax, QWORD PTR __imp__assert[rip]
 call	rax

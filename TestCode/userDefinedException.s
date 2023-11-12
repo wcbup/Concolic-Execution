@@ -264,6 +264,8 @@ user1:
 	.seh_endproc
 	.section .rdata,"dr"
 .LC4:
+	.ascii "a < b\0"
+.LC5:
 	.ascii "c >= 0\0"
 	.text
 	.globl	user2
@@ -280,15 +282,15 @@ user2:
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
 	mov	DWORD PTR 32[rbp], r8d	 # c, c
- # TestCode\userDefinedException.c:81:     assert(a > b);
+ # TestCode\userDefinedException.c:81:     assert(a < b);
 	mov	eax, DWORD PTR 16[rbp]	 # tmp90, a
 	cmp	eax, DWORD PTR 24[rbp]	 # tmp90, b
-	jg	.L32	 #,
- # TestCode\userDefinedException.c:81:     assert(a > b);
+	jl	.L32	 #,
+ # TestCode\userDefinedException.c:81:     assert(a < b);
 	mov	r8d, 81	 #,
 	lea	rax, .LC0[rip]	 # tmp91,
 	mov	rdx, rax	 #, tmp91
-	lea	rax, .LC2[rip]	 # tmp92,
+	lea	rax, .LC4[rip]	 # tmp92,
 	mov	rcx, rax	 #, tmp92
 	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp93,
 	call	rax	 # tmp93
@@ -300,7 +302,7 @@ user2:
 	mov	r8d, 82	 #,
 	lea	rax, .LC0[rip]	 # tmp94,
 	mov	rdx, rax	 #, tmp94
-	lea	rax, .LC4[rip]	 # tmp95,
+	lea	rax, .LC5[rip]	 # tmp95,
 	mov	rcx, rax	 #, tmp95
 	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp96,
 	call	rax	 # tmp96

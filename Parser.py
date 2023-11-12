@@ -33,6 +33,8 @@ class OpType(Enum):
     JLE = 19
     JS = 20
     JGE = 21
+    JL = 21
+
 
 
 class Address:
@@ -126,6 +128,13 @@ class Operation:
                 raise Exception(raw_str)
             self.type = OpType.JLE
             result = re.search(r"\bjle\b\s+([\w\.]+)", raw_str)
+            self.operand_list = [result.group(1)]
+
+        elif "jl" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JL
+            result = re.search(r"\bjl\b\s+([\w\.]+)", raw_str)
             self.operand_list = [result.group(1)]
 
         elif "js" in raw_str:

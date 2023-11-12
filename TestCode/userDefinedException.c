@@ -78,7 +78,7 @@ int user1(int a, int b, int c)
 
 int user2(int a, int b, int c)
 {
-    assert(a > b);
+    assert(a < b);
     assert(c >= 0);
     a -= b + c * b + 1;
     if (a > b)

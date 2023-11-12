@@ -530,6 +530,9 @@ class ConcolicExecutor:
 
                     else:
                         raise Exception(result_address)
+                
+                case OpType.NOP:
+                    pass
 
                 case _:
                     raise Exception(operation.type)
@@ -556,12 +559,7 @@ class ConcolicExecutor:
         index = 0
         while index < max_loop and solver.check() == sat:
             model = solver.model()
-            para_list: List[int] = [model[i].as_long() for i in model.decls()]
-            para_list: List[int] = []
-            for i in model.decls():
-                value = model[i]
-                if isinstance(value, IntNumRef):
-                    para_list.append(value.as_long())
+            para_list: List[int] = [model[i].as_long() for i in para_var_list]
             print("---input---")
             print(para_list)
             result, constraint = self.run(label_name, para_list)
@@ -611,5 +609,5 @@ if __name__ == "__main__":
     # executor.test("div_a_b4", 2, 5)
     # executor.test("div_a_b5", 2, 5)
     # executor.test("array6", 2, 5)
-    # executor.test("user1", 3, 5)
-    executor.test("user2", 3, 5)
+    executor.test("user1", 3, 16)
+    # executor.test("user2", 3, 5)
