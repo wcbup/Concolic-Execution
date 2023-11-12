@@ -26,7 +26,12 @@ cmp	DWORD PTR 16[rbp], 0
 js	.L4
 mov	eax, DWORD PTR 16[rbp]
 cdqe
+mov	edx, DWORD PTR -20[rbp+rax*4]
+mov	eax, DWORD PTR 16[rbp]
+add	eax, 1
+cdqe
 mov	eax, DWORD PTR -20[rbp+rax*4]
+add	eax, edx
 jmp	.L6
 mov	eax, 0
 add	rsp, 32

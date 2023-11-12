@@ -10,7 +10,7 @@ int array2(int i)
     int b = 3, c = 4;
     if (i <= 2 && i >= 0)
     {
-        return a[i];
+        return a[i] + a[i + 1];
     }
     else
     {

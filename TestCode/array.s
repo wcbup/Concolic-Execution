@@ -57,14 +57,22 @@ array2:
  # TestCode\array.c:11:     if (i <= 2 && i >= 0)
 	cmp	DWORD PTR 16[rbp], 0	 # i,
 	js	.L4	 #,
- # TestCode\array.c:13:         return a[i];
-	mov	eax, DWORD PTR 16[rbp]	 # tmp85, i
+ # TestCode\array.c:13:         return a[i] + a[i + 1];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp88, i
 	cdqe
-	mov	eax, DWORD PTR -20[rbp+rax*4]	 # _1, a[i_8(D)]
+	mov	edx, DWORD PTR -20[rbp+rax*4]	 # _1, a[i_11(D)]
+ # TestCode\array.c:13:         return a[i] + a[i + 1];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp89, i
+	add	eax, 1	 # _2,
+ # TestCode\array.c:13:         return a[i] + a[i + 1];
+	cdqe
+	mov	eax, DWORD PTR -20[rbp+rax*4]	 # _3, a[_2]
+ # TestCode\array.c:13:         return a[i] + a[i + 1];
+	add	eax, edx	 # _4, _1
 	jmp	.L6	 #
 .L4:
  # TestCode\array.c:17:         return 0;
-	mov	eax, 0	 # _1,
+	mov	eax, 0	 # _4,
 .L6:
  # TestCode\array.c:19: }
 	add	rsp, 32	 #,
