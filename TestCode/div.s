@@ -52,7 +52,7 @@ div_a_b1:
 .LC0:
 	.ascii "TestCode\\div.c\0"
 .LC1:
-	.ascii "a != 0\0"
+	.ascii "b != 0\0"
 	.text
 	.globl	div_a_b2
 	.def	div_a_b2;	.scl	2;	.type	32;	.endef
@@ -67,10 +67,10 @@ div_a_b2:
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # a, a
 	mov	DWORD PTR 24[rbp], edx	 # b, b
- # TestCode\div.c:17:     assert(a != 0);
-	cmp	DWORD PTR 16[rbp], 0	 # a,
+ # TestCode\div.c:17:     assert(b != 0);
+	cmp	DWORD PTR 24[rbp], 0	 # b,
 	jne	.L8	 #,
- # TestCode\div.c:17:     assert(a != 0);
+ # TestCode\div.c:17:     assert(b != 0);
 	mov	r8d, 17	 #,
 	lea	rax, .LC0[rip]	 # tmp86,
 	mov	rdx, rax	 #, tmp86
@@ -159,6 +159,58 @@ div_a_b4:
  # TestCode\div.c:43:     return a;
 	mov	eax, DWORD PTR 16[rbp]	 # _5, a
  # TestCode\div.c:44: }
+	add	rsp, 16	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
+	.globl	div_a_b5
+	.def	div_a_b5;	.scl	2;	.type	32;	.endef
+	.seh_proc	div_a_b5
+div_a_b5:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 16	 #,
+	.seh_stackalloc	16
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # a, a
+	mov	DWORD PTR 24[rbp], edx	 # b, b
+ # TestCode\div.c:48:     int c = 9;
+	mov	DWORD PTR -4[rbp], 9	 # c,
+ # TestCode\div.c:49:     a = c * b / a;
+	mov	eax, DWORD PTR -4[rbp]	 # tmp87, c
+	imul	eax, DWORD PTR 24[rbp]	 # _1, b
+ # TestCode\div.c:49:     a = c * b / a;
+	cdq
+	idiv	DWORD PTR 16[rbp]	 # a
+	mov	DWORD PTR 16[rbp], eax	 # a, tmp89
+ # TestCode\div.c:50:     b = a * b + c;
+	mov	eax, DWORD PTR 16[rbp]	 # tmp91, a
+	imul	eax, DWORD PTR 24[rbp]	 # tmp91, b
+	mov	edx, eax	 # _2, tmp91
+ # TestCode\div.c:50:     b = a * b + c;
+	mov	eax, DWORD PTR -4[rbp]	 # tmp95, c
+	add	eax, edx	 # tmp94, _2
+	mov	DWORD PTR 24[rbp], eax	 # b, tmp94
+ # TestCode\div.c:51:     if (a > b)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp96, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp96, b
+	jle	.L18	 #,
+ # TestCode\div.c:53:         return b + c / a;
+	mov	eax, DWORD PTR -4[rbp]	 # tmp99, c
+	cdq
+	idiv	DWORD PTR 16[rbp]	 # a
+	mov	edx, eax	 # _3, tmp97
+ # TestCode\div.c:53:         return b + c / a;
+	mov	eax, DWORD PTR 24[rbp]	 # tmp100, b
+	add	eax, edx	 # _4, _3
+	jmp	.L19	 #
+.L18:
+ # TestCode\div.c:55:     return a;
+	mov	eax, DWORD PTR 16[rbp]	 # _4, a
+.L19:
+ # TestCode\div.c:56: }
 	add	rsp, 16	 #,
 	pop	rbp	 #
 	ret	

@@ -298,6 +298,15 @@ class ConcolicExecutor:
                     print(f" {operand}: {get_value(operand)}")
                     print(f" eax: {get_value('eax')}")
                     print(f" edx: {get_value('edx')}")
+
+                    # check divided by zero
+                    divisor = get_value(operand)
+                    if divisor.value == 0:
+                        print(f"Divided by Zero! Exiting!")
+                        return None, total_constraint
+                    elif divisor.variable != None:
+                        total_constraint = simplify(And(total_constraint, divisor.variable != 0))
+
                     quotient = get_value("eax") / get_value(operand)
                     remainder = get_value("eax") % get_value(operand)
                     assign_value("eax", quotient)
@@ -477,6 +486,8 @@ class ConcolicExecutor:
         while index < max_loop and solver.check() == sat:
             model = solver.model()
             para_list: List[int] = [model[i].as_long() for i in model.decls()]
+            print("---input---")
+            print(para_list)
             result, constraint = self.run(label_name, para_list)
             solver.add(Not(constraint))
             if result == None:
@@ -487,15 +498,19 @@ class ConcolicExecutor:
             print(solver.assertions())
             index += 1
 
-        print("Not harmful input is found!")
+        if solver.check() != sat:
+            print("Can not find more inputs!")
+        else:
+            print("More inputs can be found!")
+        print(f"Not harmful input is found in {index} loops")
         return True
 
 
 # test code
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
-    # parser = Parser("TestCode\\div.c")
-    parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\div.c")
+    # parser = Parser("TestCode\\userDefinedException.c")
 
     executor = ConcolicExecutor(parser)
 
@@ -504,5 +519,13 @@ if __name__ == "__main__":
     # executor.run("fib2", [-1])
     # executor.run("loop")
     # executor.run("sum")
+    # executor.run("div0", [1])
+    # executor.run("div_a_b1", [1, 2])
 
-    executor.test("fib3", 1, 10)
+    # executor.test("fib3", 1, 10)
+    # executor.test("div0", 1, 10)
+    # executor.test("div_a_b1", 2, 10)
+    # executor.test("div_a_b2", 2, 10)
+    # executor.test("div_a_b3", 2, 10)
+    # executor.test("div_a_b4", 2, 5)
+    executor.test("div_a_b5", 2, 5)

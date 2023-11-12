@@ -31,6 +31,7 @@ class OpType(Enum):
     JNS = 17
     NOP = 18
     JLE = 19
+    JS = 20
 
 
 class Address:
@@ -402,5 +403,6 @@ class Parser:
 # test code
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
-    # parser = Parser("TestCode\\div.c")
-    parser = Parser("TestCode\\userDefinedException.c")
+    parser = Parser("TestCode\\div.c")
+    # parser = Parser("TestCode\\userDefinedException.c")
+    # parser = Parser("TestCode\\array.c")

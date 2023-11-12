@@ -14,7 +14,7 @@ int div_a_b1(int a, int b)
 
 int div_a_b2(int a, int b)
 {
-    assert(a != 0);
+    assert(b != 0);
     return a / b;
 }
 
@@ -39,6 +39,18 @@ int div_a_b4(int a, int b)
     while (a > b)
     {
         a = b / c;
+    }
+    return a;
+}
+
+int div_a_b5(int a, int b)
+{
+    int c = 9;
+    a = c * b / a;
+    b = a * b + c;
+    if (a > b)
+    {
+        return b + c / a;
     }
     return a;
 }
