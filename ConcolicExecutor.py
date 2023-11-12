@@ -447,6 +447,17 @@ class ConcolicExecutor:
                     total_constraint = simplify(And(total_constraint, constraint))
                     print(f" constraint: {total_constraint}")
 
+                case OpType.JGE:
+                    print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 > self.cmp_operand2
+                    if result:
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
+                        operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    print(f" constraint: {total_constraint}")
+
                 case OpType.JS:
                     print(f" constraint: {total_constraint}")
                     result, constraint = self.cmp_operand1 < self.cmp_operand2
@@ -575,8 +586,8 @@ class ConcolicExecutor:
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
-    parser = Parser("TestCode\\array.c")
+    parser = Parser("TestCode\\userDefinedException.c")
+    # parser = Parser("TestCode\\array.c")
 
     executor = ConcolicExecutor(parser)
 
@@ -599,4 +610,6 @@ if __name__ == "__main__":
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
     # executor.test("div_a_b5", 2, 5)
-    executor.test("array4", 1, 5)
+    # executor.test("array6", 2, 5)
+    # executor.test("user1", 3, 5)
+    executor.test("user2", 3, 5)

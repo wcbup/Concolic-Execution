@@ -202,4 +202,131 @@ fib3:
 	pop	rbp	 #
 	ret	
 	.seh_endproc
+	.section .rdata,"dr"
+.LC2:
+	.ascii "a > b\0"
+.LC3:
+	.ascii "c > 0\0"
+	.text
+	.globl	user1
+	.def	user1;	.scl	2;	.type	32;	.endef
+	.seh_proc	user1
+user1:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 32	 #,
+	.seh_stackalloc	32
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # a, a
+	mov	DWORD PTR 24[rbp], edx	 # b, b
+	mov	DWORD PTR 32[rbp], r8d	 # c, c
+ # TestCode\userDefinedException.c:71:     assert(a > b);
+	mov	eax, DWORD PTR 16[rbp]	 # tmp88, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp88, b
+	jg	.L24	 #,
+ # TestCode\userDefinedException.c:71:     assert(a > b);
+	mov	r8d, 71	 #,
+	lea	rax, .LC0[rip]	 # tmp89,
+	mov	rdx, rax	 #, tmp89
+	lea	rax, .LC2[rip]	 # tmp90,
+	mov	rcx, rax	 #, tmp90
+	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp91,
+	call	rax	 # tmp91
+.L24:
+ # TestCode\userDefinedException.c:72:     assert(c > 0);
+	cmp	DWORD PTR 32[rbp], 0	 # c,
+	jg	.L27	 #,
+ # TestCode\userDefinedException.c:72:     assert(c > 0);
+	mov	r8d, 72	 #,
+	lea	rax, .LC0[rip]	 # tmp92,
+	mov	rdx, rax	 #, tmp92
+	lea	rax, .LC3[rip]	 # tmp93,
+	mov	rcx, rax	 #, tmp93
+	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp94,
+	call	rax	 # tmp94
+.L27:
+ # TestCode\userDefinedException.c:73:     if (a - c > b)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp95, a
+	sub	eax, DWORD PTR 32[rbp]	 # _1, c
+ # TestCode\userDefinedException.c:73:     if (a - c > b)
+	cmp	DWORD PTR 24[rbp], eax	 # b, _1
+	jge	.L28	 #,
+ # TestCode\userDefinedException.c:75:         userDefinedException();
+	call	userDefinedException	 #
+.L28:
+ # TestCode\userDefinedException.c:77: }
+	nop	
+	add	rsp, 32	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
+	.section .rdata,"dr"
+.LC4:
+	.ascii "c >= 0\0"
+	.text
+	.globl	user2
+	.def	user2;	.scl	2;	.type	32;	.endef
+	.seh_proc	user2
+user2:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 32	 #,
+	.seh_stackalloc	32
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # a, a
+	mov	DWORD PTR 24[rbp], edx	 # b, b
+	mov	DWORD PTR 32[rbp], r8d	 # c, c
+ # TestCode\userDefinedException.c:81:     assert(a > b);
+	mov	eax, DWORD PTR 16[rbp]	 # tmp90, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp90, b
+	jg	.L32	 #,
+ # TestCode\userDefinedException.c:81:     assert(a > b);
+	mov	r8d, 81	 #,
+	lea	rax, .LC0[rip]	 # tmp91,
+	mov	rdx, rax	 #, tmp91
+	lea	rax, .LC2[rip]	 # tmp92,
+	mov	rcx, rax	 #, tmp92
+	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp93,
+	call	rax	 # tmp93
+.L32:
+ # TestCode\userDefinedException.c:82:     assert(c >= 0);
+	cmp	DWORD PTR 32[rbp], 0	 # c,
+	jns	.L35	 #,
+ # TestCode\userDefinedException.c:82:     assert(c >= 0);
+	mov	r8d, 82	 #,
+	lea	rax, .LC0[rip]	 # tmp94,
+	mov	rdx, rax	 #, tmp94
+	lea	rax, .LC4[rip]	 # tmp95,
+	mov	rcx, rax	 #, tmp95
+	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp96,
+	call	rax	 # tmp96
+.L35:
+ # TestCode\userDefinedException.c:83:     a -= b + c * b + 1;
+	mov	eax, DWORD PTR 32[rbp]	 # tmp97, c
+	imul	eax, DWORD PTR 24[rbp]	 # tmp97, b
+	mov	edx, eax	 # _1, tmp97
+ # TestCode\userDefinedException.c:83:     a -= b + c * b + 1;
+	mov	eax, DWORD PTR 24[rbp]	 # tmp98, b
+	add	eax, edx	 # _2, _1
+ # TestCode\userDefinedException.c:83:     a -= b + c * b + 1;
+	add	eax, 1	 # _3,
+ # TestCode\userDefinedException.c:83:     a -= b + c * b + 1;
+	sub	DWORD PTR 16[rbp], eax	 # a, _3
+ # TestCode\userDefinedException.c:84:     if (a > b)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp99, a
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp99, b
+	jle	.L36	 #,
+ # TestCode\userDefinedException.c:86:         userDefinedException();
+	call	userDefinedException	 #
+.L36:
+ # TestCode\userDefinedException.c:88: }
+	nop	
+	add	rsp, 32	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
 	.ident	"GCC: (Rev10, Built by MSYS2 project) 12.2.0"

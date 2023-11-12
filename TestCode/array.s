@@ -130,26 +130,15 @@ array4:
 	.seh_stackalloc	80
 	.seh_endprologue
 	mov	DWORD PTR 16[rbp], ecx	 # i, i
- # TestCode\array.c:31:     int a[] = {1, 2, 3, 4};
-	mov	DWORD PTR -16[rbp], 1	 # a[0],
-	mov	DWORD PTR -12[rbp], 2	 # a[1],
-	mov	DWORD PTR -8[rbp], 3	 # a[2],
-	mov	DWORD PTR -4[rbp], 4	 # a[3],
- # TestCode\array.c:32:     int b[] = {1, 2, 3, 4, 5};
-	mov	DWORD PTR -48[rbp], 1	 # b[0],
-	mov	DWORD PTR -44[rbp], 2	 # b[1],
-	mov	DWORD PTR -40[rbp], 3	 # b[2],
-	mov	DWORD PTR -36[rbp], 4	 # b[3],
-	mov	DWORD PTR -32[rbp], 5	 # b[4],
- # TestCode\array.c:33:     assert(i > 0 && i < 4);
+ # TestCode\array.c:31:     assert(i > 0 && i < 4);
 	cmp	DWORD PTR 16[rbp], 0	 # i,
 	jle	.L10	 #,
- # TestCode\array.c:33:     assert(i > 0 && i < 4);
+ # TestCode\array.c:31:     assert(i > 0 && i < 4);
 	cmp	DWORD PTR 16[rbp], 3	 # i,
 	jle	.L13	 #,
 .L10:
- # TestCode\array.c:33:     assert(i > 0 && i < 4);
-	mov	r8d, 33	 #,
+ # TestCode\array.c:31:     assert(i > 0 && i < 4);
+	mov	r8d, 31	 #,
 	lea	rax, .LC0[rip]	 # tmp89,
 	mov	rdx, rax	 #, tmp89
 	lea	rax, .LC1[rip]	 # tmp90,
@@ -157,10 +146,21 @@ array4:
 	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp91,
 	call	rax	 # tmp91
 .L13:
+ # TestCode\array.c:32:     int a[] = {1, 2, 3, 4};
+	mov	DWORD PTR -16[rbp], 1	 # a[0],
+	mov	DWORD PTR -12[rbp], 2	 # a[1],
+	mov	DWORD PTR -8[rbp], 3	 # a[2],
+	mov	DWORD PTR -4[rbp], 4	 # a[3],
+ # TestCode\array.c:33:     int b[] = {1, 2, 3, 4, 5};
+	mov	DWORD PTR -48[rbp], 1	 # b[0],
+	mov	DWORD PTR -44[rbp], 2	 # b[1],
+	mov	DWORD PTR -40[rbp], 3	 # b[2],
+	mov	DWORD PTR -36[rbp], 4	 # b[3],
+	mov	DWORD PTR -32[rbp], 5	 # b[4],
  # TestCode\array.c:34:     return a[i] + b[i + 1];
 	mov	eax, DWORD PTR 16[rbp]	 # tmp93, i
 	cdqe
-	mov	edx, DWORD PTR -16[rbp+rax*4]	 # _1, a[i_15(D)]
+	mov	edx, DWORD PTR -16[rbp+rax*4]	 # _1, a[i_5(D)]
  # TestCode\array.c:34:     return a[i] + b[i + 1];
 	mov	eax, DWORD PTR 16[rbp]	 # tmp94, i
 	add	eax, 1	 # _2,
@@ -171,6 +171,112 @@ array4:
 	add	eax, edx	 # _19, _1
  # TestCode\array.c:35: }
 	add	rsp, 80	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
+	.globl	array5
+	.def	array5;	.scl	2;	.type	32;	.endef
+	.seh_proc	array5
+array5:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 32	 #,
+	.seh_stackalloc	32
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # x, x
+	mov	DWORD PTR 24[rbp], edx	 # y, y
+ # TestCode\array.c:39:     int a[] = {1, 2, 3, 4, 5, 6, 7};
+	mov	DWORD PTR -32[rbp], 1	 # a[0],
+	mov	DWORD PTR -28[rbp], 2	 # a[1],
+	mov	DWORD PTR -24[rbp], 3	 # a[2],
+	mov	DWORD PTR -20[rbp], 4	 # a[3],
+	mov	DWORD PTR -16[rbp], 5	 # a[4],
+	mov	DWORD PTR -12[rbp], 6	 # a[5],
+	mov	DWORD PTR -8[rbp], 7	 # a[6],
+ # TestCode\array.c:40:     int index = 3;
+	mov	DWORD PTR -4[rbp], 3	 # index,
+ # TestCode\array.c:41:     if (x > y)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp84, x
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp84, y
+	jle	.L16	 #,
+ # TestCode\array.c:43:         index += y;
+	mov	eax, DWORD PTR 24[rbp]	 # tmp85, y
+	add	DWORD PTR -4[rbp], eax	 # index, tmp85
+	jmp	.L17	 #
+.L16:
+ # TestCode\array.c:47:         index += x;
+	mov	eax, DWORD PTR 16[rbp]	 # tmp86, x
+	add	DWORD PTR -4[rbp], eax	 # index, tmp86
+.L17:
+ # TestCode\array.c:49:     return a[index];
+	mov	eax, DWORD PTR -4[rbp]	 # tmp88, index
+	cdqe
+	mov	eax, DWORD PTR -32[rbp+rax*4]	 # _15, a[index_1]
+ # TestCode\array.c:50: }
+	add	rsp, 32	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
+	.section .rdata,"dr"
+.LC2:
+	.ascii "x < 7\0"
+	.text
+	.globl	array6
+	.def	array6;	.scl	2;	.type	32;	.endef
+	.seh_proc	array6
+array6:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 64	 #,
+	.seh_stackalloc	64
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # x, x
+	mov	DWORD PTR 24[rbp], edx	 # y, y
+ # TestCode\array.c:54:     assert(x < 7);
+	cmp	DWORD PTR 16[rbp], 6	 # x,
+	jle	.L22	 #,
+ # TestCode\array.c:54:     assert(x < 7);
+	mov	r8d, 54	 #,
+	lea	rax, .LC0[rip]	 # tmp86,
+	mov	rdx, rax	 #, tmp86
+	lea	rax, .LC2[rip]	 # tmp87,
+	mov	rcx, rax	 #, tmp87
+	mov	rax, QWORD PTR __imp__assert[rip]	 # tmp88,
+	call	rax	 # tmp88
+.L22:
+ # TestCode\array.c:55:     int a[] = {1, 2, 3, 4, 5, 6, 7};
+	mov	DWORD PTR -32[rbp], 1	 # a[0],
+	mov	DWORD PTR -28[rbp], 2	 # a[1],
+	mov	DWORD PTR -24[rbp], 3	 # a[2],
+	mov	DWORD PTR -20[rbp], 4	 # a[3],
+	mov	DWORD PTR -16[rbp], 5	 # a[4],
+	mov	DWORD PTR -12[rbp], 6	 # a[5],
+	mov	DWORD PTR -8[rbp], 7	 # a[6],
+ # TestCode\array.c:56:     int index = 3;
+	mov	DWORD PTR -4[rbp], 3	 # index,
+ # TestCode\array.c:57:     if (x > y)
+	mov	eax, DWORD PTR 16[rbp]	 # tmp89, x
+	cmp	eax, DWORD PTR 24[rbp]	 # tmp89, y
+	jle	.L23	 #,
+ # TestCode\array.c:59:         index += y;
+	mov	eax, DWORD PTR 24[rbp]	 # tmp90, y
+	add	DWORD PTR -4[rbp], eax	 # index, tmp90
+	jmp	.L24	 #
+.L23:
+ # TestCode\array.c:63:         index += x;
+	mov	eax, DWORD PTR 16[rbp]	 # tmp91, x
+	add	DWORD PTR -4[rbp], eax	 # index, tmp91
+.L24:
+ # TestCode\array.c:65:     return a[index];
+	mov	eax, DWORD PTR -4[rbp]	 # tmp93, index
+	cdqe
+	mov	eax, DWORD PTR -32[rbp+rax*4]	 # _19, a[index_1]
+ # TestCode\array.c:66: }
+	add	rsp, 64	 #,
 	pop	rbp	 #
 	ret	
 	.seh_endproc

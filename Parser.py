@@ -32,6 +32,7 @@ class OpType(Enum):
     NOP = 18
     JLE = 19
     JS = 20
+    JGE = 21
 
 
 class Address:
@@ -83,6 +84,13 @@ class Operation:
                 raise Exception(raw_str)
             self.type = OpType.CALL
             result = re.search(r"\bcall\b\s+(\b\w+)", raw_str)
+            self.operand_list = [result.group(1)]
+
+        elif "jge" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JGE
+            result = re.search(r"\bjge\b\s+([\w\.]+)", raw_str)
             self.operand_list = [result.group(1)]
 
         elif "jg" in raw_str:
@@ -284,6 +292,9 @@ class Code:
                     case OpType.JG:
                         print(" ", self.operation.operand_list)
 
+                    case OpType.JGE:
+                        print(" ", self.operation.operand_list)
+
                     case OpType.JMP:
                         print(" ", self.operation.operand_list)
 
@@ -448,5 +459,5 @@ class Parser:
 if __name__ == "__main__":
     # parser = Parser("TestCode\\foo.c")
     # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
-    parser = Parser("TestCode\\array.c")
+    parser = Parser("TestCode\\userDefinedException.c")
+    # parser = Parser("TestCode\\array.c")
