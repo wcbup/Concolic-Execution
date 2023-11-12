@@ -79,3 +79,34 @@ mov	eax, DWORD PTR 16[rbp]
 add	rsp, 16
 pop	rbp
 ret
+push	rbp
+mov	rbp, rsp
+sub	rsp, 16
+mov	DWORD PTR 16[rbp], ecx
+mov	DWORD PTR 24[rbp], edx
+mov	DWORD PTR -4[rbp], 9
+mov	eax, DWORD PTR -4[rbp]
+imul	eax, DWORD PTR 24[rbp]
+cdq
+idiv	DWORD PTR 16[rbp]
+mov	DWORD PTR 16[rbp], eax
+mov	eax, DWORD PTR 16[rbp]
+imul	eax, DWORD PTR 24[rbp]
+mov	edx, eax
+mov	eax, DWORD PTR -4[rbp]
+add	eax, edx
+mov	DWORD PTR 24[rbp], eax
+mov	eax, DWORD PTR 16[rbp]
+cmp	eax, DWORD PTR 24[rbp]
+jle	.L18
+mov	eax, DWORD PTR -4[rbp]
+cdq
+idiv	DWORD PTR 16[rbp]
+mov	edx, eax
+mov	eax, DWORD PTR 24[rbp]
+add	eax, edx
+jmp	.L19
+mov	eax, DWORD PTR 16[rbp]
+add	rsp, 16
+pop	rbp
+ret

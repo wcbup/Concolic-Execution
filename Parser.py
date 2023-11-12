@@ -123,13 +123,17 @@ class Operation:
             self.operand_list.append(Address(result.group(1)))
 
         elif "imul" in raw_str:
-            if "[" in raw_str:
-                raise Exception(raw_str)
             self.type = OpType.IMUL
             result = re.search(r"\bimul\b\s+(\b.+),\s+(\b.+),\s+(\b.+)", raw_str)
-            for i in range(1, 4):
+            para_num = 3
+            if result == None:
+                result = re.search(r"\bimul\b\s+(\b.+),\s+(\b.+)", raw_str)
+                para_num = 2
+            for i in range(1, 1 + para_num):
                 operand_str = result.group(i)
-                if operand_str.lstrip("-").isdigit():
+                if "[" in operand_str:
+                    self.operand_list.append(Address(operand_str))
+                elif operand_str.lstrip("-").isdigit():
                     self.operand_list.append(int(operand_str))
                 else:
                     self.operand_list.append(operand_str)

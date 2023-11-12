@@ -305,7 +305,9 @@ class ConcolicExecutor:
                         print(f"Divided by Zero! Exiting!")
                         return None, total_constraint
                     elif divisor.variable != None:
-                        total_constraint = simplify(And(total_constraint, divisor.variable != 0))
+                        total_constraint = simplify(
+                            And(total_constraint, divisor.variable != 0)
+                        )
 
                     quotient = get_value("eax") / get_value(operand)
                     remainder = get_value("eax") % get_value(operand)
@@ -316,17 +318,28 @@ class ConcolicExecutor:
                     print(f" edx: {get_value('edx')}")
 
                 case OpType.IMUL:
-                    if len(operation.operand_list) != 3:
+                    if len(operation.operand_list) == 3:
+                        for i in operation.operand_list:
+                            print(f" {i}: {get_value(i)}")
+                        result = get_value(operation.operand_list[1]) * get_value(
+                            operation.operand_list[2]
+                        )
+                        assign_value(operation.operand_list[0], result)
+                        print(
+                            f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
+                        )
+                    elif len(operation.operand_list) == 2:
+                        for i in operation.operand_list:
+                            print(f" {i}: {get_value(i)}")
+                        result = get_value(operation.operand_list[0]) * get_value(
+                            operation.operand_list[1]
+                        )
+                        assign_value(operation.operand_list[0], result)
+                        print(
+                            f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
+                        )
+                    else:
                         raise Exception
-                    for i in operation.operand_list:
-                        print(f" {i}: {get_value(i)}")
-                    result = get_value(operation.operand_list[1]) * get_value(
-                        operation.operand_list[2]
-                    )
-                    assign_value(operation.operand_list[0], result)
-                    print(
-                        f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
-                    )
 
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
@@ -521,6 +534,7 @@ if __name__ == "__main__":
     # executor.run("sum")
     # executor.run("div0", [1])
     # executor.run("div_a_b1", [1, 2])
+    executor.run("div_a_b5", [1, 2])
 
     # executor.test("fib3", 1, 10)
     # executor.test("div0", 1, 10)
@@ -528,4 +542,4 @@ if __name__ == "__main__":
     # executor.test("div_a_b2", 2, 10)
     # executor.test("div_a_b3", 2, 10)
     # executor.test("div_a_b4", 2, 5)
-    executor.test("div_a_b5", 2, 5)
+    # executor.test("div_a_b5", 2, 5)
