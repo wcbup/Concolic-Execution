@@ -120,6 +120,13 @@ class Operation:
             result = re.search(r"\bjle\b\s+([\w\.]+)", raw_str)
             self.operand_list = [result.group(1)]
 
+        elif "js" in raw_str:
+            if "[" in raw_str:
+                raise Exception(raw_str)
+            self.type = OpType.JS
+            result = re.search(r"\bjs\b\s+([\w\.]+)", raw_str)
+            self.operand_list = [result.group(1)]
+
         elif "mov" in raw_str:
             self.type = OpType.MOV
             raw_str = raw_str.replace("rax", "eax")
@@ -286,6 +293,9 @@ class Code:
                         print(" ", self.operation.operand_list)
 
                     case OpType.JLE:
+                        print(" ", self.operation.operand_list)
+
+                    case OpType.JS:
                         print(" ", self.operation.operand_list)
 
                     case OpType.MOV:
