@@ -213,6 +213,7 @@ class Operation:
             for i in range(1, 3):
                 operand_str = result.group(i)
                 operand_str = operand_str.replace("rdx", "edx")
+                operand_str = operand_str.replace("rax", "eax")
                 if "[" in operand_str:
                     self.operand_list.append(Address(operand_str))
                 elif operand_str.isdigit():

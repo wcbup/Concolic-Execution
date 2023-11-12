@@ -57,24 +57,57 @@ array2:
  # TestCode\array.c:11:     if (i <= 2 && i >= 0)
 	cmp	DWORD PTR 16[rbp], 0	 # i,
 	js	.L4	 #,
- # TestCode\array.c:13:         return a[i] + a[i + 1];
-	mov	eax, DWORD PTR 16[rbp]	 # tmp88, i
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp92, i
 	cdqe
-	mov	edx, DWORD PTR -20[rbp+rax*4]	 # _1, a[i_11(D)]
- # TestCode\array.c:13:         return a[i] + a[i + 1];
-	mov	eax, DWORD PTR 16[rbp]	 # tmp89, i
+	mov	edx, DWORD PTR -20[rbp+rax*4]	 # _1, a[i_15(D)]
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp93, i
 	add	eax, 1	 # _2,
- # TestCode\array.c:13:         return a[i] + a[i + 1];
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
 	cdqe
 	mov	eax, DWORD PTR -20[rbp+rax*4]	 # _3, a[_2]
- # TestCode\array.c:13:         return a[i] + a[i + 1];
-	add	eax, edx	 # _4, _1
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	lea	ecx, 1[rax]	 # _4,
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp95, i
+	add	eax, 2	 # _5,
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	cdqe
+	mov	eax, DWORD PTR -20[rbp+rax*4]	 # _6, a[_5]
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	imul	eax, ecx	 # _7, _4
+ # TestCode\array.c:13:         return a[i] + (a[i + 1] + 1) * a[i + 2];
+	add	eax, edx	 # _8, _1
 	jmp	.L6	 #
 .L4:
  # TestCode\array.c:17:         return 0;
-	mov	eax, 0	 # _4,
+	mov	eax, 0	 # _8,
 .L6:
  # TestCode\array.c:19: }
+	add	rsp, 32	 #,
+	pop	rbp	 #
+	ret	
+	.seh_endproc
+	.globl	array3
+	.def	array3;	.scl	2;	.type	32;	.endef
+	.seh_proc	array3
+array3:
+	push	rbp	 #
+	.seh_pushreg	rbp
+	mov	rbp, rsp	 #,
+	.seh_setframe	rbp, 0
+	sub	rsp, 32	 #,
+	.seh_stackalloc	32
+	.seh_endprologue
+	mov	DWORD PTR 16[rbp], ecx	 # i, i
+ # TestCode\array.c:24:     a[4] = 100;
+	mov	DWORD PTR -16[rbp], 100	 # a[4],
+ # TestCode\array.c:25:     return a[i];
+	mov	eax, DWORD PTR 16[rbp]	 # tmp85, i
+	cdqe
+	mov	eax, DWORD PTR -32[rbp+rax*4]	 # _4, a[i_3(D)]
+ # TestCode\array.c:26: }
 	add	rsp, 32	 #,
 	pop	rbp	 #
 	ret	

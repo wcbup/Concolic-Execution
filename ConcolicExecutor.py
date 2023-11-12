@@ -1,7 +1,7 @@
 from __future__ import annotations
 from Parser import Parser, OpType, Address, ArrayAddress
 from typing import Dict, List, Tuple
-from z3 import *
+from z3 import ArithRef, BoolRef, Not, And, Solver, Int, simplify, IntNumRef, sat
 
 
 class ConcolicVar:
@@ -229,7 +229,7 @@ class ConcolicExecutor:
             self.register_dict["rsp"] = self.register_dict["rsp"] + ConcolicVar(8)
             return value
 
-        def get_value(x: int | str | Address | ArrayRef) -> ConcolicVar | None:
+        def get_value(x: int | str | Address | ArrayAddress) -> ConcolicVar | None:
             if isinstance(x, int):
                 return ConcolicVar(x)
             elif isinstance(x, str):
@@ -559,7 +559,8 @@ if __name__ == "__main__":
     # executor.run("div_a_b1", [1, 2])
     # executor.run("div_a_b5", [1, 2])
     # executor.run("array1", [2])
-    executor.run("array2", [1])
+    executor.run("array2", [0])
+    # executor.run("array3", [4])
 
     # executor.test("fib3", 1, 10)
     # executor.test("div0", 1, 10)

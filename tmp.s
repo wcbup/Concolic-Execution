@@ -31,9 +31,26 @@ mov	eax, DWORD PTR 16[rbp]
 add	eax, 1
 cdqe
 mov	eax, DWORD PTR -20[rbp+rax*4]
+lea	ecx, 1[rax]
+mov	eax, DWORD PTR 16[rbp]
+add	eax, 2
+cdqe
+mov	eax, DWORD PTR -20[rbp+rax*4]
+imul	eax, ecx
 add	eax, edx
 jmp	.L6
 mov	eax, 0
+add	rsp, 32
+pop	rbp
+ret
+push	rbp
+mov	rbp, rsp
+sub	rsp, 32
+mov	DWORD PTR 16[rbp], ecx
+mov	DWORD PTR -16[rbp], 100
+mov	eax, DWORD PTR 16[rbp]
+cdqe
+mov	eax, DWORD PTR -32[rbp+rax*4]
 add	rsp, 32
 pop	rbp
 ret
