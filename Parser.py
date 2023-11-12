@@ -116,11 +116,16 @@ class Operation:
                     self.operand_list.append(operand_str)
 
         elif "idiv" in raw_str:
-            if "[" not in raw_str:
-                raise Exception(raw_str)
             self.type = OpType.IDIV
             result = re.search(r"idiv\s+(\b.+)", raw_str)
-            self.operand_list.append(Address(result.group(1)))
+            operand_str = result.group(1)
+            if "[" in operand_str:
+                self.operand_list.append(Address(operand_str))
+            elif operand_str.lstrip("-").isdigit():
+                raise Exception
+                self.operand_list.append(int(operand_str))
+            else:
+                self.operand_list.append(operand_str)
 
         elif "imul" in raw_str:
             self.type = OpType.IMUL
@@ -179,6 +184,7 @@ class Operation:
             result = re.search(r"\blea\b\s+(.+),\s+(.+)", raw_str)
             for i in range(1, 3):
                 operand_str = result.group(i)
+                operand_str = operand_str.replace("rdx", "edx")
                 if "[" in operand_str:
                     self.operand_list.append(Address(operand_str))
                 elif operand_str.isdigit():
