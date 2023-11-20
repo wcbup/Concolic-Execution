@@ -6,6 +6,11 @@ int div0(int a)
     return a / b;
 }
 
+int div1(int a)
+{
+    return a / 0;
+}
+
 int div_a_b1(int a, int b)
 {
     return a / b;
@@ -52,16 +57,4 @@ int div_a_b5(int a, int b)
         return b + c / a;
     }
     return a;
-}
-
-int div_x0_x1(int x0, int x1)
-{
-    if (x0 > x1)
-    {
-        return x1 / (x0 + 1);
-    }
-    else
-    {
-        return x1;
-    }
 }

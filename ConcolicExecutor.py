@@ -2,6 +2,7 @@ from __future__ import annotations
 from Parser import Parser, OpType, Address, ArrayAddress
 from typing import Dict, List, Tuple
 from z3 import ArithRef, BoolRef, Not, And, Solver, Int, simplify, IntNumRef, sat
+import time
 
 
 class ConcolicVar:
@@ -258,43 +259,43 @@ class ConcolicExecutor:
             else:
                 raise Exception(destination)
 
-        print()
-        print()
-        print("---begin running---", label_name)
+        # print()
+        # print()
+        # print("---begin running---", label_name)
         operation_index = self.parser.label_dict[label_name]
         while operation_index < len(self.parser.code_list):
             code = self.parser.operation_list[operation_index]
-            print(f"index: {operation_index}")
+            # print(f"index: {operation_index}")
             code.print()
             operation = code.operation
 
             match operation.type:
                 case OpType.PUSH:
                     operand = operation.operand_list[0]
-                    print(f" rsp: {get_value('rsp')}")
+                    # print(f" rsp: {get_value('rsp')}")
                     if isinstance(operand, int):
                         push(operand)
-                        print(" push", operand)
+                        # print(" push", operand)
                     elif isinstance(operand, str):
                         push(get_value(operand))
-                        print(f" push {operand:} [{get_value(operand)}]")
+                        # print(f" push {operand:} [{get_value(operand)}]")
                     else:
                         raise Exception(operand)
-                    print(f" rsp: {get_value('rsp')}")
+                    # print(f" rsp: {get_value('rsp')}")
 
                 case OpType.POP:
                     operand = operation.operand_list[0]
-                    print(f" {operand}: {get_value(operand)}")
-                    print(f" rsp: {get_value('rsp')}")
+                    # print(f" {operand}: {get_value(operand)}")
+                    # print(f" rsp: {get_value('rsp')}")
                     value = pop()
                     assign_value(operand, value)
-                    print(f" {operand}: {get_value(operand)}")
-                    print(f" rsp: {get_value('rsp')}")
+                    # print(f" {operand}: {get_value(operand)}")
+                    # print(f" rsp: {get_value('rsp')}")
 
                 case OpType.MOV:
                     destination = operation.operand_list[0]
                     source = operation.operand_list[1]
-                    
+
                     # check array index bound
                     if isinstance(source, ArrayAddress):
                         index: ConcolicVar = (
@@ -309,10 +310,10 @@ class ConcolicExecutor:
                             index.value < low_bound.value
                             or index.value > up_bound.value
                         ):
-                            print("Index out of bound!")
-                            print(f"low bound: {low_bound}")
-                            print(f"up bound: {up_bound}")
-                            print(f"index: {index}")
+                            # print("Index out of bound!")
+                            # print(f"low bound: {low_bound}")
+                            # print(f"up bound: {up_bound}")
+                            # print(f"index: {index}")
 
                             return None, total_constraint
                         else:
@@ -324,21 +325,21 @@ class ConcolicExecutor:
                                         index.variable <= up_bound.value,
                                     )
                                 )
-                    print(f" {destination}: {get_value(destination)}")
-                    print(f" {source}: {get_value(source)}")
+                    # print(f" {destination}: {get_value(destination)}")
+                    # print(f" {source}: {get_value(source)}")
                     assign_value(destination, get_value(source))
-                    print(f" {destination}: {get_value(destination)}")
+                    # print(f" {destination}: {get_value(destination)}")
 
                 case OpType.IDIV:
                     operand = operation.operand_list[0]
-                    print(f" {operand}: {get_value(operand)}")
-                    print(f" eax: {get_value('eax')}")
-                    print(f" edx: {get_value('edx')}")
+                    # print(f" {operand}: {get_value(operand)}")
+                    # print(f" eax: {get_value('eax')}")
+                    # print(f" edx: {get_value('edx')}")
 
                     # check divided by zero
                     divisor = get_value(operand)
                     if divisor.value == 0:
-                        print(f"Divided by Zero! Exiting!")
+                        # print(f"Divided by Zero! Exiting!")
                         return None, total_constraint
                     elif divisor.variable != None:
                         total_constraint = simplify(
@@ -349,75 +350,75 @@ class ConcolicExecutor:
                     remainder = get_value("eax") % get_value(operand)
                     assign_value("eax", quotient)
                     assign_value("edx", remainder)
-                    print(f" {operand}: {get_value(operand)}")
-                    print(f" eax: {get_value('eax')}")
-                    print(f" edx: {get_value('edx')}")
+                    # print(f" {operand}: {get_value(operand)}")
+                    # print(f" eax: {get_value('eax')}")
+                    # print(f" edx: {get_value('edx')}")
 
                 case OpType.IMUL:
                     if len(operation.operand_list) == 3:
-                        for i in operation.operand_list:
-                            print(f" {i}: {get_value(i)}")
+                        # for i in operation.operand_list:
+                        #     print(f" {i}: {get_value(i)}")
                         result = get_value(operation.operand_list[1]) * get_value(
                             operation.operand_list[2]
                         )
                         assign_value(operation.operand_list[0], result)
-                        print(
-                            f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
-                        )
+                        # print(
+                        #     f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
+                        # )
                     elif len(operation.operand_list) == 2:
-                        for i in operation.operand_list:
-                            print(f" {i}: {get_value(i)}")
+                        # for i in operation.operand_list:
+                        #     print(f" {i}: {get_value(i)}")
                         result = get_value(operation.operand_list[0]) * get_value(
                             operation.operand_list[1]
                         )
                         assign_value(operation.operand_list[0], result)
-                        print(
-                            f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
-                        )
+                        # print(
+                        #     f" {operation.operand_list[0]}: {get_value(operation.operand_list[0])}"
+                        # )
                     else:
                         raise Exception
 
                 case OpType.SUB:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    print(f" {operand1}: {get_value(operand1)}")
-                    print(f" {operand2}: {get_value(operand2)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand2}: {get_value(operand2)}")
                     result = get_value(operand1) - get_value(operand2)
                     assign_value(operation.operand_list[0], result)
-                    print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.ADD:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    print(f" {operand1}: {get_value(operand1)}")
-                    print(f" {operand2}: {get_value(operand2)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand2}: {get_value(operand2)}")
                     result = get_value(operand1) + get_value(operand2)
                     assign_value(operation.operand_list[0], result)
-                    print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.SAL:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
-                    print(f" {operand1}: {get_value(operand1)}")
-                    print(f" {operand2}: {get_value(operand2)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand2}: {get_value(operand2)}")
                     result = get_value(operand1) << get_value(operand2)
                     assign_value(operation.operand_list[0], result)
-                    print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.LEA:
                     operand1 = operation.operand_list[0]
                     operand2 = operation.operand_list[1]
                     if operand2.operand == "rip":
-                        print(" Assertion failed!")
-                        print(" Exiting!")
+                        # print(" Assertion failed!")
+                        # print(" Exiting!")
                         return 0, total_constraint
                     if not isinstance(operand2, Address):
                         raise Exception
-                    print(f" {operand1}: {get_value(operand1)}")
-                    print(f" {operand2}: {get_value(operand2.operand)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand2}: {get_value(operand2.operand)}")
                     result = get_value(operand2.operand) + ConcolicVar(operand2.offset)
                     assign_value(operation.operand_list[0], result)
-                    print(f" {operand1}: {get_value(operand1)}")
+                    # print(f" {operand1}: {get_value(operand1)}")
 
                 case OpType.CDQ:
                     pass
@@ -437,7 +438,7 @@ class ConcolicExecutor:
                     self.cmp_operand2 = get_value(operand2)
 
                 case OpType.JG:
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
                     result, constraint = self.cmp_operand1 > self.cmp_operand2
                     if result:
                         operation_index = self.parser.label_dict[
@@ -445,43 +446,10 @@ class ConcolicExecutor:
                         ]
                         operation_index -= 1
                     total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
 
                 case OpType.JGE:
-                    print(f" constraint: {total_constraint}")
-                    result, constraint = self.cmp_operand1 > self.cmp_operand2
-                    if result:
-                        operation_index = self.parser.label_dict[
-                            operation.operand_list[0]
-                        ]
-                        operation_index -= 1
-                    total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
-
-                case OpType.JS:
-                    print(f" constraint: {total_constraint}")
-                    result, constraint = self.cmp_operand1 < self.cmp_operand2
-                    if result:
-                        operation_index = self.parser.label_dict[
-                            operation.operand_list[0]
-                        ]
-                        operation_index -= 1
-                    total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
-
-                case OpType.JNE:
-                    print(f" constraint: {total_constraint}")
-                    result, constraint = self.cmp_operand1 != self.cmp_operand2
-                    if result:
-                        operation_index = self.parser.label_dict[
-                            operation.operand_list[0]
-                        ]
-                        operation_index -= 1
-                    total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
-
-                case OpType.JNS:
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
                     result, constraint = self.cmp_operand1 >= self.cmp_operand2
                     if result:
                         operation_index = self.parser.label_dict[
@@ -489,10 +457,43 @@ class ConcolicExecutor:
                         ]
                         operation_index -= 1
                     total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
+
+                case OpType.JS:
+                    # print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 < self.cmp_operand2
+                    if result:
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
+                        operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    # print(f" constraint: {total_constraint}")
+
+                case OpType.JNE:
+                    # print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 != self.cmp_operand2
+                    if result:
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
+                        operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    # print(f" constraint: {total_constraint}")
+
+                case OpType.JNS:
+                    # print(f" constraint: {total_constraint}")
+                    result, constraint = self.cmp_operand1 >= self.cmp_operand2
+                    if result:
+                        operation_index = self.parser.label_dict[
+                            operation.operand_list[0]
+                        ]
+                        operation_index -= 1
+                    total_constraint = simplify(And(total_constraint, constraint))
+                    # print(f" constraint: {total_constraint}")
 
                 case OpType.JLE:
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
                     result, constraint = self.cmp_operand1 <= self.cmp_operand2
                     if result:
                         operation_index = self.parser.label_dict[
@@ -500,7 +501,7 @@ class ConcolicExecutor:
                         ]
                         operation_index -= 1
                     total_constraint = simplify(And(total_constraint, constraint))
-                    print(f" constraint: {total_constraint}")
+                    # print(f" constraint: {total_constraint}")
 
                 case OpType.JMP:
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
@@ -508,9 +509,9 @@ class ConcolicExecutor:
 
                 case OpType.CALL:
                     if operation.operand_list[0] == "userDefinedException":
-                        print(" Raise userDefinedException!")
-                        print(f" Constraint is {total_constraint}")
-                        print(" Exiting!")
+                        # print(" Raise userDefinedException!")
+                        # print(f" Constraint is {total_constraint}")
+                        # print(" Exiting!")
                         return None, total_constraint
                     push(operation_index)  # push return address
                     operation_index = self.parser.label_dict[operation.operand_list[0]]
@@ -519,18 +520,18 @@ class ConcolicExecutor:
                 case OpType.RET:
                     result_address: str | None = pop()
                     if result_address is None:
-                        print(" Finishing!")
-                        print(f" Result is {get_value('eax')}")
-                        print(f" Constraint is {total_constraint}")
+                        # print(" Finishing!")
+                        # print(f" Result is {get_value('eax')}")
+                        # print(f" Constraint is {total_constraint}")
                         return get_value("eax"), total_constraint
                     elif isinstance(result_address, int):
-                        print(" Returning")
-                        print(f" result is {get_value('eax')}")
+                        # print(" Returning")
+                        # print(f" result is {get_value('eax')}")
                         operation_index = result_address
 
                     else:
                         raise Exception(result_address)
-                
+
                 case OpType.NOP:
                     pass
 
@@ -546,9 +547,9 @@ class ConcolicExecutor:
         test the function
         return True is not harmful input can be found
         """
-        print()
-        print()
-        print("---begin testing---")
+        # print()
+        # print()
+        # print("---begin testing---")
         solver = Solver()
         para_var_list: List[ArithRef] = []
         for i in range(para_number):
@@ -568,8 +569,8 @@ class ConcolicExecutor:
                 print(f"Find an input that can cause error in {index + 1} loops")
                 print(para_list)
                 return False
-            print("Current Constraint:")
-            print(solver.assertions())
+            # print("Current Constraint:")
+            # print(solver.assertions())
             index += 1
 
         if solver.check() != sat:
@@ -582,33 +583,13 @@ class ConcolicExecutor:
 
 # test code
 if __name__ == "__main__":
-    # parser = Parser("TestCode\\foo.c")
-    # parser = Parser("TestCode\\div.c")
-    # parser = Parser("TestCode\\userDefinedException.c")
-    parser = Parser("TestCode\\array.c")
+    start_time = time.time()
+
+    parser = Parser("FinalTest\\userDefinedException.c")
 
     executor = ConcolicExecutor(parser)
 
-    # executor.run("loop", [8])
-    # executor.run("loop", [3])
-    # executor.run("fib2", [-1])
-    # executor.run("loop")
-    # executor.run("sum")
-    # executor.run("div0", [1])
-    # executor.run("div_a_b1", [1, 2])
-    # executor.run("div_a_b5", [1, 2])
-    # executor.run("array1", [2])
-    # executor.run("array2", [2])
-    # executor.run("array3", [4])
-
-    # executor.test("div0", 1, 10)
-    # executor.test("div_a_b1", 2, 10)
-    # executor.test("div_a_b2", 2, 10)
-    # executor.test("div_a_b3", 2, 10)
-    # executor.test("div_a_b4", 2, 5)
-    # executor.test("div_a_b5", 2, 5)
-    # executor.test("fib1", 1, 5)
-    # executor.test("user1", 3, 16)
-    # executor.test("array1", 1, 5)
-    # executor.test("array4", 1, 5)
-    executor.test("array6", 2, 5)
+    executor.test("user1", 3, 5)
+    print(
+        f"runtime: {time.time() - start_time :.5f}",
+    )

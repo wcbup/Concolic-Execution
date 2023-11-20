@@ -229,35 +229,4 @@ div_a_b5:
 	pop	rbp	 #
 	ret	
 	.seh_endproc
-	.globl	div_x0_x1
-	.def	div_x0_x1;	.scl	2;	.type	32;	.endef
-	.seh_proc	div_x0_x1
-div_x0_x1:
-	push	rbp	 #
-	.seh_pushreg	rbp
-	mov	rbp, rsp	 #,
-	.seh_setframe	rbp, 0
-	.seh_endprologue
-	mov	DWORD PTR 16[rbp], ecx	 # x0, x0
-	mov	DWORD PTR 24[rbp], edx	 # x1, x1
- # TestCode\div.c:59:     if (x0 > x1)
-	mov	eax, DWORD PTR 16[rbp]	 # tmp85, x0
-	cmp	eax, DWORD PTR 24[rbp]	 # tmp85, x1
-	jle	.L22	 #,
- # TestCode\div.c:61:         return x1 / (x0 + 1);
-	mov	eax, DWORD PTR 16[rbp]	 # tmp86, x0
-	lea	ecx, 1[rax]	 # _1,
- # TestCode\div.c:61:         return x1 / (x0 + 1);
-	mov	eax, DWORD PTR 24[rbp]	 # tmp89, x1
-	cdq
-	idiv	ecx	 # _1
-	jmp	.L23	 #
-.L22:
- # TestCode\div.c:65:         return x1;
-	mov	eax, DWORD PTR 24[rbp]	 # _2, x1
-.L23:
- # TestCode\div.c:67: }
-	pop	rbp	 #
-	ret	
-	.seh_endproc
 	.ident	"GCC: (Rev10, Built by MSYS2 project) 12.2.0"

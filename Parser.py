@@ -437,8 +437,8 @@ class Parser:
             if tmp_code.type != CodeType.MISC:
                 self.code_list.append(tmp_code)
 
-        for code in self.code_list:
-            code.print()
+        # for code in self.code_list:
+        #     code.print()
 
         self.label_dict: Dict[str, int] = {}
         self.operation_list: List[Code] = []
@@ -449,14 +449,14 @@ class Parser:
                 self.operation_list.append(code)
 
         # record the location of the label
-        print("----complete code----")
-        print()
-        for i in range(len(self.operation_list)):
-            if i in self.label_dict.values():
-                for label in self.label_dict.keys():
-                    if self.label_dict[label] == i:
-                        print(f"---{label}---")
-            self.operation_list[i].print()
+        # print("----complete code----")
+        # print()
+        # for i in range(len(self.operation_list)):
+        #     if i in self.label_dict.values():
+        #         for label in self.label_dict.keys():
+        #             if self.label_dict[label] == i:
+        #                 print(f"---{label}---")
+        #     self.operation_list[i].print()
 
         # save operation
         with open("./tmp.s", "w") as f:
